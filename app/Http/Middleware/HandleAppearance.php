@@ -12,11 +12,13 @@ class HandleAppearance
     /**
      * Handle an incoming request.
      *
+     * Moot uses light mode only — no dark theme support.
+     *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
-        View::share('appearance', $request->cookie('appearance') ?? 'system');
+        View::share('appearance', 'light');
 
         return $next($request);
     }
