@@ -8,35 +8,35 @@
 
 - [x] **Skill 1** — Moot Configuration · `config/moot.php`, `.env.example`
 - [x] **Skill 2** — Enums · `app/Enums/ConsultationMode.php`, `MessageStatus.php`, `SynthesisFormat.php`
-- [ ] **Skill 3** — Database Migrations · `database/migrations/` (threads, messages, advisor_responses)
-- [ ] **Skill 4** — Eloquent Models · `app/Models/Thread.php`, `Message.php`, `AdvisorResponse.php`
-- [ ] **Skill 5** — Factories & Seeders · `database/factories/`, `DatabaseSeeder.php`
+- [x] **Skill 3** — Database Migrations · `database/migrations/` (threads, messages, advisor_responses)
+- [x] **Skill 4** — Eloquent Models · `app/Models/Thread.php`, `Message.php`, `AdvisorResponse.php`
+- [x] **Skill 5** — Factories & Seeders · `database/factories/`, `DatabaseSeeder.php`
 - [x] **Skill 6** — Laravel AI SDK · `laravel/ai` v0.1.5 installed
 
 ## Phase 1: Design System
 
-- [ ] **Skill 7** — Earth-Tone Theme & JetBrains Mono · `resources/css/app.css`, `app.blade.php`
-- [ ] **Skill 8** — Provider Color Utility & Badge · `resources/js/lib/providers.ts`, `provider-badge.tsx`
+- [x] **Skill 7** — Earth-Tone Theme & JetBrains Mono · `resources/css/app.css`, `app.blade.php`
+- [x] **Skill 8** — Provider Color Utility & Badge · `resources/js/lib/providers.ts`, `provider-badge.tsx`
 
 ## Phase 2: Backend Core
 
-- [ ] **Skill 9** — AI Advisor Agents · `app/Ai/Agents/` (Claude, GPT, Gemini, Registry)
-- [ ] **Skill 10** — Synthesizer Agent · `app/Ai/Agents/Synthesizer.php`
-- [ ] **Skill 11** — Broadcasting Events & Reverb · `app/Events/`, `routes/channels.php`
-- [ ] **Skill 12** — DispatchAdvisors Job · `app/Jobs/DispatchAdvisors.php`
-- [ ] **Skill 13** — Thread Controller & API Routes · `routes/api.php`, `ThreadController.php`
-- [ ] **Skill 14** — Message Controller · `MessageController.php`
-- [ ] **Skill 15** — Inertia Web Routes · `routes/moot.php`, `MootController.php`
+- [x] **Skill 9** — AI Advisor Agents · `app/Ai/Agents/` (Claude, GPT, Gemini, Registry)
+- [x] **Skill 10** — Synthesizer Agent · `app/Ai/Agents/Synthesizer.php`
+- [x] **Skill 11** — Broadcasting Events & Reverb · `app/Events/`, `routes/channels.php`
+- [x] **Skill 12** — DispatchAdvisors Job · `app/Jobs/DispatchAdvisors.php`
+- [x] **Skill 13** — Thread Controller & API Routes · `routes/api.php`, `ThreadController.php`
+- [x] **Skill 14** — Message Controller · `MessageController.php`
+- [x] **Skill 15** — Inertia Web Routes · `routes/moot.php`, `MootController.php`
 
 ## Phase 3: Frontend Core
 
-- [ ] **Skill 16** — TypeScript Types · `resources/js/types/moot.ts`
-- [ ] **Skill 17** — Moot Layout & Sidebar Nav · `moot-layout.tsx`, `app-sidebar.tsx`
-- [ ] **Skill 18** — Chat Input Component · `chat-input.tsx`
-- [ ] **Skill 19** — Advisor Card Component · `advisor-card.tsx`
-- [ ] **Skill 20** — Synthesis Panel Component · `synthesis-panel.tsx`
-- [ ] **Skill 21** — Conversation Thread Component · `conversation-thread.tsx`
-- [ ] **Skill 22** — Provider Selector Component · `provider-selector.tsx`
+- [x] **Skill 16** — TypeScript Types · `resources/js/types/moot.ts`
+- [x] **Skill 17** — Moot Layout & Sidebar Nav · `moot-layout.tsx`, `app-sidebar.tsx`
+- [x] **Skill 18** — Chat Input Component · `chat-input.tsx`
+- [x] **Skill 19** — Advisor Card Component · `advisor-card.tsx`
+- [x] **Skill 20** — Synthesis Panel Component · `synthesis-panel.tsx`
+- [x] **Skill 21** — Conversation Thread Component · `conversation-thread.tsx`
+- [x] **Skill 22** — Provider Selector Component · `provider-selector.tsx`
 - [ ] **Skill 23** — Moot Pages (Index & Show) · `pages/moot/index.tsx`, `show.tsx`
 
 ## Phase 4: Real-Time

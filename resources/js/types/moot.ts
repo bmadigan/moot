@@ -15,6 +15,13 @@ export interface Thread {
     created_at: string;
     updated_at: string;
     messages?: Message[];
+    latest_message?: Message | null;
+}
+
+export interface MootConfig {
+    providers: Record<string, Record<string, { label: string; color: string; pill: string; models: Record<string, string>; default_model: string }>>;
+    default_providers: string[];
+    default_synthesis_format: SynthesisFormat;
 }
 
 export interface Message {
