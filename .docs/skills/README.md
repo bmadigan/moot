@@ -37,13 +37,13 @@
 - [x] **Skill 20** — Synthesis Panel Component · `synthesis-panel.tsx`
 - [x] **Skill 21** — Conversation Thread Component · `conversation-thread.tsx`
 - [x] **Skill 22** — Provider Selector Component · `provider-selector.tsx`
-- [ ] **Skill 23** — Moot Pages (Index & Show) · `pages/moot/index.tsx`, `show.tsx`
+- [x] **Skill 23** — Moot Pages (Index & Show) · `pages/moot/index.tsx`, `show.tsx`
 
 ## Phase 4: Real-Time
 
-- [ ] **Skill 24** — Laravel Echo + Reverb Frontend · `resources/js/lib/echo.ts`
-- [ ] **Skill 25** — useMoot Hook · `resources/js/hooks/use-moot.ts`
-- [ ] **Skill 26** — Wire Real-Time into Show Page
+- [x] **Skill 24** — Laravel Echo + Reverb Frontend · `resources/js/lib/echo.ts`
+- [x] **Skill 25** — useMoot Hook · `resources/js/hooks/use-moot.ts`
+- [x] **Skill 26** — Wire Real-Time into Show Page
 
 ## Phase 5: Multi-Turn
 
