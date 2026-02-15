@@ -1,7 +1,7 @@
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { ProviderConfigPopover } from '@/components/moot/provider-config-popover';
 import { cn } from '@/lib/utils';
-import type { ConsultationMode, MootProviderMeta, ProviderConfig } from '@/types/moot';
+import type { ConsultationMode, MootProviderMeta, ProviderConfig, ProviderStatus } from '@/types/moot';
 
 interface ProviderSelectorProps {
     mode: ConsultationMode;
@@ -11,6 +11,7 @@ interface ProviderSelectorProps {
     availableProviders: Record<string, MootProviderMeta>;
     providerConfig?: Record<string, ProviderConfig>;
     onProviderConfigChange?: (config: Record<string, ProviderConfig>) => void;
+    providerStatus?: Record<string, ProviderStatus>;
     className?: string;
 }
 
@@ -22,6 +23,7 @@ export function ProviderSelector({
     availableProviders,
     providerConfig = {},
     onProviderConfigChange,
+    providerStatus,
     className,
 }: ProviderSelectorProps) {
     function handleProviderToggle(provider: string) {
@@ -66,16 +68,18 @@ export function ProviderSelector({
                 {Object.entries(availableProviders).map(
                     ([key, meta]) => {
                         const isSelected = selectedProviders.includes(key);
+                        const isConfigured = providerStatus?.[key]?.configured ?? true;
                         return (
                             <div key={key} className="group relative flex items-center gap-0.5">
                                 <button
                                     type="button"
                                     onClick={() => handleProviderToggle(key)}
                                     className={cn(
-                                        'rounded-full border px-3 py-1 text-xs font-medium transition-colors',
+                                        'relative rounded-full border px-3 py-1 text-xs font-medium transition-colors',
                                         isSelected
                                             ? 'border-current/30 text-white'
                                             : 'border-border text-muted-foreground hover:border-current/20',
+                                        !isConfigured && 'opacity-50',
                                     )}
                                     style={
                                         isSelected
@@ -86,7 +90,14 @@ export function ProviderSelector({
                                             : { color: meta.color }
                                     }
                                 >
-                                    {meta.label}
+                                    <span className="flex items-center gap-1.5">
+                                        <span
+                                            className={`inline-block size-1.5 rounded-full ${
+                                                isConfigured ? 'bg-green-400' : 'bg-red-400'
+                                            }`}
+                                        />
+                                        {meta.label}
+                                    </span>
                                 </button>
                                 {isSelected && onProviderConfigChange && meta.models && (
                                     <ProviderConfigPopover

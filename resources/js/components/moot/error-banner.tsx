@@ -13,11 +13,11 @@ interface ErrorBannerProps {
 export function ErrorBanner({ message, threadId, className }: ErrorBannerProps) {
     if (message.status !== 'failed') return null;
 
-    const failedCount = (message.advisor_responses ?? []).filter(
-        (r) => r.error,
-    ).length;
-    const totalCount = (message.advisor_responses ?? []).length;
-    const allFailed = failedCount === totalCount && totalCount > 0;
+    const responses = message.advisor_responses ?? [];
+    const failedCount = responses.filter((r) => r.error).length;
+    const totalCount = responses.length;
+    const noResponses = totalCount === 0;
+    const allFailed = noResponses || (failedCount === totalCount);
 
     function handleRetry() {
         router.post(
@@ -36,9 +36,11 @@ export function ErrorBanner({ message, threadId, className }: ErrorBannerProps) 
         >
             <AlertTriangle className="size-4 shrink-0 text-destructive" />
             <p className="flex-1 text-sm text-destructive">
-                {allFailed
-                    ? 'All advisors failed to respond.'
-                    : `${failedCount} of ${totalCount} advisor${totalCount !== 1 ? 's' : ''} failed.`}
+                {noResponses
+                    ? 'No advisors could be reached. Check your API keys in .env.'
+                    : allFailed
+                      ? 'All advisors failed to respond.'
+                      : `${failedCount} of ${totalCount} advisor${totalCount !== 1 ? 's' : ''} failed.`}
             </p>
             <Button
                 variant="outline"

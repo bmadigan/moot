@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Ai\Agents\AdvisorRegistry;
+use App\Ai\Agents\StructuredSynthesizer;
 use App\Ai\Agents\Synthesizer;
 use App\Enums\MessageStatus;
 use App\Enums\SynthesisFormat;
@@ -15,7 +16,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Concurrency;
 use Illuminate\Support\Str;
 use Throwable;
 
@@ -42,27 +42,21 @@ class DispatchAdvisors implements ShouldQueue
             ]);
         }
 
-        // Fan out to all providers concurrently
-        $tasks = [];
+        // Query each provider (individual failures are handled inside queryAdvisor)
+        $queried = false;
         foreach ($providers as $provider) {
             if (! AdvisorRegistry::has($provider)) {
                 continue;
             }
 
-            $tasks[$provider] = fn () => $this->queryAdvisor($provider, $providerConfig[$provider] ?? []);
+            $queried = true;
+            $this->queryAdvisor($provider, $providerConfig[$provider] ?? []);
         }
 
-        if (empty($tasks)) {
+        if (! $queried) {
             $this->message->update(['status' => MessageStatus::Failed]);
 
             return;
-        }
-
-        try {
-            Concurrency::run($tasks);
-        } catch (Throwable) {
-            // Individual failures are already handled inside queryAdvisor.
-            // This catches catastrophic failures in the concurrency driver itself.
         }
 
         // Check if any advisor succeeded
@@ -70,7 +64,7 @@ class DispatchAdvisors implements ShouldQueue
 
         if (! $hasResults) {
             $this->message->update(['status' => MessageStatus::Failed]);
-            MootCompleted::dispatch($this->message->fresh(), $thread->id);
+            $this->broadcastCompletion($thread->id);
 
             return;
         }
@@ -80,7 +74,7 @@ class DispatchAdvisors implements ShouldQueue
         $this->runSynthesis();
 
         $this->message->update(['status' => MessageStatus::Completed]);
-        MootCompleted::dispatch($this->message->fresh(), $thread->id);
+        $this->broadcastCompletion($thread->id);
     }
 
     protected function queryAdvisor(string $provider, array $config): void
@@ -120,7 +114,7 @@ class DispatchAdvisors implements ShouldQueue
                 'created_at' => now(),
             ]);
 
-            AdvisorResponded::dispatch($advisorResponse, $this->message->thread_id);
+            $this->broadcastAdvisorResponse($advisorResponse);
         } catch (Throwable $e) {
             $durationMs = (int) ((hrtime(true) - $startTime) / 1_000_000);
 
@@ -132,7 +126,7 @@ class DispatchAdvisors implements ShouldQueue
                 'created_at' => now(),
             ]);
 
-            AdvisorResponded::dispatch($advisorResponse, $this->message->thread_id);
+            $this->broadcastAdvisorResponse($advisorResponse);
         }
     }
 
@@ -180,16 +174,17 @@ class DispatchAdvisors implements ShouldQueue
         $format = $this->message->synthesis_format ?? SynthesisFormat::Markdown;
 
         try {
-            $synthesizer = Synthesizer::make(
-                message: $this->message,
-                format: $format,
-            );
+            if ($format === SynthesisFormat::Structured) {
+                $synthesizer = StructuredSynthesizer::make(message: $this->message);
+            } else {
+                $synthesizer = Synthesizer::make(message: $this->message);
+            }
 
             $response = $synthesizer->prompt($synthesizer->buildPrompt());
 
             $update = ['synthesis' => $response->text];
 
-            if ($format === SynthesisFormat::Structured && $response instanceof \Laravel\Ai\Responses\StructuredAgentResponse) {
+            if ($response instanceof \Laravel\Ai\Responses\StructuredAgentResponse) {
                 $update['synthesis_structured'] = $response->toArray();
             }
 
@@ -198,6 +193,24 @@ class DispatchAdvisors implements ShouldQueue
             $this->message->update([
                 'synthesis' => "Synthesis failed: {$e->getMessage()}",
             ]);
+        }
+    }
+
+    protected function broadcastAdvisorResponse(AdvisorResponse $advisorResponse): void
+    {
+        try {
+            AdvisorResponded::dispatch($advisorResponse, $this->message->thread_id);
+        } catch (Throwable) {
+            // Broadcasting is optional — don't fail the job if Reverb is unavailable.
+        }
+    }
+
+    protected function broadcastCompletion(string $threadId): void
+    {
+        try {
+            MootCompleted::dispatch($this->message->fresh(), $threadId);
+        } catch (Throwable) {
+            // Broadcasting is optional — don't fail the job if Reverb is unavailable.
         }
     }
 

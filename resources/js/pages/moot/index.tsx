@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Head, router } from '@inertiajs/react';
 import { ChatInput } from '@/components/moot/chat-input';
 import { ProviderSelector } from '@/components/moot/provider-selector';
+import { ProviderStatusPanel } from '@/components/moot/provider-status';
 import MootLayout from '@/layouts/moot-layout';
 import type { BreadcrumbItem } from '@/types';
 import type { ConsultationMode, MootConfig, ProviderConfig, SynthesisFormat, Thread } from '@/types/moot';
@@ -18,9 +19,11 @@ interface Props {
 export default function MootIndex({ threads, mootConfig }: Props) {
     const [prompt, setPrompt] = React.useState('');
     const [mode, setMode] = React.useState<ConsultationMode>('quick');
-    const [selectedProviders, setSelectedProviders] = React.useState<string[]>(
-        mootConfig.default_providers,
-    );
+    const [selectedProviders, setSelectedProviders] = React.useState<string[]>(() => {
+        return mootConfig.default_providers.filter(
+            (p) => mootConfig.provider_status[p]?.configured,
+        );
+    });
     const [providerConfig, setProviderConfig] = React.useState<Record<string, ProviderConfig>>({});
     const [synthesisFormat, setSynthesisFormat] = React.useState<SynthesisFormat>(
         mootConfig.default_synthesis_format,
@@ -31,15 +34,24 @@ export default function MootIndex({ threads, mootConfig }: Props) {
         return mootConfig.providers[mode] ?? {};
     }, [mootConfig.providers, mode]);
 
-    // Reset providers when mode changes
+    const hasConfiguredProviders = React.useMemo(() => {
+        return selectedProviders.some(
+            (p) => mootConfig.provider_status[p]?.configured,
+        );
+    }, [selectedProviders, mootConfig.provider_status]);
+
+    // Reset providers when mode changes, only selecting configured ones
     React.useEffect(() => {
         const available = Object.keys(mootConfig.providers[mode] ?? {});
-        setSelectedProviders(available);
+        const configured = available.filter(
+            (p) => mootConfig.provider_status[p]?.configured,
+        );
+        setSelectedProviders(configured.length > 0 ? configured : available);
         setProviderConfig({});
-    }, [mode, mootConfig.providers]);
+    }, [mode, mootConfig.providers, mootConfig.provider_status]);
 
     function handleSubmit() {
-        if (!prompt.trim() || submitting) return;
+        if (!prompt.trim() || submitting || !hasConfiguredProviders) return;
 
         setSubmitting(true);
 
@@ -74,6 +86,10 @@ export default function MootIndex({ threads, mootConfig }: Props) {
                         </p>
                     </div>
 
+                    <ProviderStatusPanel
+                        providerStatus={mootConfig.provider_status}
+                    />
+
                     <ProviderSelector
                         mode={mode}
                         onModeChange={setMode}
@@ -82,6 +98,7 @@ export default function MootIndex({ threads, mootConfig }: Props) {
                         availableProviders={availableProviders}
                         providerConfig={providerConfig}
                         onProviderConfigChange={setProviderConfig}
+                        providerStatus={mootConfig.provider_status}
                         className="justify-center"
                     />
 
@@ -89,18 +106,20 @@ export default function MootIndex({ threads, mootConfig }: Props) {
                         value={prompt}
                         onChange={setPrompt}
                         onSubmit={handleSubmit}
-                        disabled={submitting}
+                        disabled={submitting || !hasConfiguredProviders}
                         synthesisFormat={synthesisFormat}
                         onSynthesisFormatChange={setSynthesisFormat}
                     />
 
-                    <p className="text-center text-xs text-muted-foreground">
-                        Press{' '}
-                        <kbd className="rounded border bg-muted px-1.5 py-0.5 text-[10px] font-medium">
-                            Cmd+Enter
-                        </kbd>{' '}
-                        to submit
-                    </p>
+                    {hasConfiguredProviders && (
+                        <p className="text-center text-xs text-muted-foreground">
+                            Press{' '}
+                            <kbd className="rounded border bg-muted px-1.5 py-0.5 text-[10px] font-medium">
+                                Cmd+Enter
+                            </kbd>{' '}
+                            to submit
+                        </p>
+                    )}
                 </div>
             </div>
         </MootLayout>

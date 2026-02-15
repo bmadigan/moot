@@ -29,7 +29,7 @@ class AdvisorResponse extends Model
     protected function casts(): array
     {
         return [
-            'estimated_cost' => 'decimal:6',
+            'estimated_cost' => 'float',
             'created_at' => 'datetime',
         ];
     }

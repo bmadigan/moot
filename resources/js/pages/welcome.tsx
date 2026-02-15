@@ -1,6 +1,16 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import { login, register } from '@/routes';
 
+function MootIcon({ className }: { className?: string }) {
+    return (
+        <svg viewBox="0 0 120 120" className={className} fill="white" xmlns="http://www.w3.org/2000/svg">
+            <path d="M60,10A50,50,0,1,0,110,60,50.06,50.06,0,0,0,60,10Zm0,92A42,42,0,1,1,102,60,42.05,42.05,0,0,1,60,102Z" />
+            <path d="M72.5,45.5H53.1a6.6,6.6,0,0,0-6.6,6.6V61.5a6.6,6.6,0,0,0,6.6,6.6h2.2v6.6l8.8-6.6h8.4a6.6,6.6,0,0,0,6.6-6.6V52.1A6.6,6.6,0,0,0,72.5,45.5Z" />
+            <path d="M75.2,40.5H62.5a8.2,8.2,0,0,0-8.2,8.2v1.5h18.2a8.2,8.2,0,0,1,8.2,8.2V68.2h1.5a8.2,8.2,0,0,0,8.2-8.2V48.7A8.2,8.2,0,0,0,75.2,40.5Z" opacity="0.6" />
+        </svg>
+    );
+}
+
 export default function Welcome({ canRegister = true }: { canRegister?: boolean }) {
     const { auth } = usePage().props;
 
@@ -20,10 +30,7 @@ export default function Welcome({ canRegister = true }: { canRegister?: boolean 
                     <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
                         <Link href="/" className="flex items-center gap-3">
                             <div className="flex size-9 items-center justify-center rounded-lg bg-primary">
-                                <svg viewBox="0 0 120 120" className="size-6" fill="white">
-                                    <path d="M72.5,45.5H53.1a6.6,6.6,0,0,0-6.6,6.6V61.5a6.6,6.6,0,0,0,6.6,6.6h2.2v6.6l8.8-6.6h8.4a6.6,6.6,0,0,0,6.6-6.6V52.1A6.6,6.6,0,0,0,72.5,45.5Z" />
-                                    <path d="M75.2,40.5H62.5a8.2,8.2,0,0,0-8.2,8.2v1.5h18.2a8.2,8.2,0,0,1,8.2,8.2V68.2h1.5a8.2,8.2,0,0,0,8.2-8.2V48.7A8.2,8.2,0,0,0,75.2,40.5Z" opacity="0.6" />
-                                </svg>
+                                <MootIcon className="size-6" />
                             </div>
                             <span className="text-lg font-semibold tracking-tight">Moot</span>
                         </Link>
@@ -607,10 +614,7 @@ export default function Welcome({ canRegister = true }: { canRegister?: boolean 
                     <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 sm:flex-row">
                         <div className="flex items-center gap-3">
                             <div className="flex size-7 items-center justify-center rounded-md bg-primary">
-                                <svg viewBox="0 0 120 120" className="size-4" fill="white">
-                                    <path d="M72.5,45.5H53.1a6.6,6.6,0,0,0-6.6,6.6V61.5a6.6,6.6,0,0,0,6.6,6.6h2.2v6.6l8.8-6.6h8.4a6.6,6.6,0,0,0,6.6-6.6V52.1A6.6,6.6,0,0,0,72.5,45.5Z" />
-                                    <path d="M75.2,40.5H62.5a8.2,8.2,0,0,0-8.2,8.2v1.5h18.2a8.2,8.2,0,0,1,8.2,8.2V68.2h1.5a8.2,8.2,0,0,0,8.2-8.2V48.7A8.2,8.2,0,0,0,75.2,40.5Z" opacity="0.6" />
-                                </svg>
+                                <MootIcon className="size-4" />
                             </div>
                             <span className="text-sm text-muted-foreground">
                                 Moot &mdash; Open source, MIT licensed

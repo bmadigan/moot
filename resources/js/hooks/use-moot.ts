@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { router } from '@inertiajs/react';
 import echo from '@/lib/echo';
 import type { AdvisorResponse, Message, Thread } from '@/types/moot';
 
@@ -24,6 +25,18 @@ export function useMoot(thread: Thread): UseMootReturn {
             m.status === 'synthesizing',
     );
 
+    // Poll for updates when processing and Echo isn't delivering events
+    React.useEffect(() => {
+        if (!isProcessing) return;
+
+        const interval = setInterval(() => {
+            router.reload({ only: ['thread'] });
+        }, 2000);
+
+        return () => clearInterval(interval);
+    }, [isProcessing]);
+
+    // Real-time updates via Echo (when Reverb is running)
     React.useEffect(() => {
         const channel = echo.private(`thread.${thread.id}`);
 

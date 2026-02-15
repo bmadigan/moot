@@ -26,10 +26,15 @@ export interface MootProviderMeta {
     default_model?: string;
 }
 
+export interface ProviderStatus {
+    configured: boolean;
+}
+
 export interface MootConfig {
     providers: Record<string, Record<string, MootProviderMeta>>;
     default_providers: string[];
     default_synthesis_format: SynthesisFormat;
+    provider_status: Record<string, ProviderStatus>;
 }
 
 export interface Message {
