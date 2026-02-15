@@ -1,10 +1,13 @@
+import * as React from 'react';
 import { AppContent } from '@/components/app-content';
 import { AppShell } from '@/components/app-shell';
 import { AppSidebar } from '@/components/app-sidebar';
 import { AppSidebarHeader } from '@/components/app-sidebar-header';
+import { ShortcutsHelp } from '@/components/moot/shortcuts-help';
+import { ThreadSidebar } from '@/components/moot/thread-sidebar';
+import { useKeyboardShortcuts } from '@/hooks/use-keyboard-shortcuts';
 import type { BreadcrumbItem } from '@/types';
 import type { Thread } from '@/types/moot';
-import { ThreadSidebar } from '@/components/moot/thread-sidebar';
 
 interface MootLayoutProps {
     children: React.ReactNode;
@@ -19,6 +22,12 @@ export default function MootLayout({
     activeThreadId,
     breadcrumbs = [],
 }: MootLayoutProps) {
+    const [showShortcuts, setShowShortcuts] = React.useState(false);
+
+    useKeyboardShortcuts({
+        onToggleHelp: () => setShowShortcuts((v) => !v),
+    });
+
     return (
         <AppShell variant="sidebar">
             <AppSidebar />
@@ -34,6 +43,10 @@ export default function MootLayout({
                     </main>
                 </div>
             </AppContent>
+            <ShortcutsHelp
+                open={showShortcuts}
+                onClose={() => setShowShortcuts(false)}
+            />
         </AppShell>
     );
 }

@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Head, router } from '@inertiajs/react';
 import { ChatInput } from '@/components/moot/chat-input';
 import { ConversationThread } from '@/components/moot/conversation-thread';
+import { ExportButton } from '@/components/moot/export-button';
 import { useMoot } from '@/hooks/use-moot';
 import MootLayout from '@/layouts/moot-layout';
 import type { BreadcrumbItem } from '@/types';
@@ -48,6 +49,10 @@ export default function MootShow({ thread, threads, mootConfig }: Props) {
             breadcrumbs={breadcrumbs}
         >
             <Head title={thread.title || 'Moot Thread'} />
+
+            <div className="flex items-center justify-end border-b border-sidebar-border/50 px-4 py-2">
+                <ExportButton threadId={thread.id} />
+            </div>
 
             <ConversationThread
                 messages={messages}

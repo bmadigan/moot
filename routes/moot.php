@@ -9,4 +9,5 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/moot/{thread}', [MootController::class, 'show'])->name('moot.show');
     Route::post('/moot/{thread}/messages', [MootController::class, 'message'])->name('moot.message');
     Route::delete('/moot/{thread}', [MootController::class, 'destroy'])->name('moot.destroy');
+    Route::get('/moot/{thread}/export', [MootController::class, 'export'])->name('moot.export');
 });

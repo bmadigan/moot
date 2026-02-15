@@ -24,8 +24,8 @@
 - [x] **Skill 10** — Synthesizer Agent · `app/Ai/Agents/Synthesizer.php`
 - [x] **Skill 11** — Broadcasting Events & Reverb · `app/Events/`, `routes/channels.php`
 - [x] **Skill 12** — DispatchAdvisors Job · `app/Jobs/DispatchAdvisors.php`
-- [x] **Skill 13** — Thread Controller & API Routes · `routes/api.php`, `ThreadController.php`
-- [x] **Skill 14** — Message Controller · `MessageController.php`
+- [x] **Skill 13** — ~~API Routes~~ Removed (Inertia handles all CRUD)
+- [x] **Skill 14** — ~~Message API Controller~~ Removed (messages via Inertia)
 - [x] **Skill 15** — Inertia Web Routes · `routes/moot.php`, `MootController.php`
 
 ## Phase 3: Frontend Core
@@ -64,8 +64,8 @@
 
 ## Phase 7: Distribution
 
-- [ ] **Skill 38** — Export Thread as Markdown · `ThreadExportController.php`
-- [ ] **Skill 39** — Docker Compose · `docker-compose.yml`
-- [ ] **Skill 40** — Keyboard Shortcuts · `use-keyboard-shortcuts.ts`
-- [ ] **Skill 41** — Test Suite · `tests/Feature/`, `tests/Unit/`
-- [ ] **Skill 42** — README & Documentation · `README.md`, `CONTRIBUTING.md`
+- [x] **Skill 38** — Export Thread as Markdown · `MootController::export()` (web route)
+- [x] **Skill 39** — Docker Compose · `docker-compose.yml`, `docker/`
+- [x] **Skill 40** — Keyboard Shortcuts · `use-keyboard-shortcuts.ts`, `shortcuts-help.tsx`
+- [x] **Skill 41** — Test Suite · `tests/Feature/Moot/`, `tests/Unit/`
+- [x] **Skill 42** — README & Documentation · `README.md`, `CONTRIBUTING.md`
