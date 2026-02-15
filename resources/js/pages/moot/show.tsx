@@ -5,7 +5,7 @@ import { ConversationThread } from '@/components/moot/conversation-thread';
 import { useMoot } from '@/hooks/use-moot';
 import MootLayout from '@/layouts/moot-layout';
 import type { BreadcrumbItem } from '@/types';
-import type { MootConfig, Thread } from '@/types/moot';
+import type { MootConfig, SynthesisFormat, Thread } from '@/types/moot';
 
 interface Props {
     thread: Thread;
@@ -17,6 +17,9 @@ export default function MootShow({ thread, threads, mootConfig }: Props) {
     const { messages, isProcessing } = useMoot(thread);
     const [content, setContent] = React.useState('');
     const [submitting, setSubmitting] = React.useState(false);
+    const [synthesisFormat, setSynthesisFormat] = React.useState<SynthesisFormat>(
+        mootConfig.default_synthesis_format,
+    );
 
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Moot', href: '/moot' },
@@ -29,7 +32,7 @@ export default function MootShow({ thread, threads, mootConfig }: Props) {
         setSubmitting(true);
         router.post(
             `/moot/${thread.id}/messages`,
-            { content: content.trim() },
+            { content: content.trim(), synthesis_format: synthesisFormat },
             {
                 preserveScroll: true,
                 onSuccess: () => setContent(''),
@@ -46,7 +49,11 @@ export default function MootShow({ thread, threads, mootConfig }: Props) {
         >
             <Head title={thread.title || 'Moot Thread'} />
 
-            <ConversationThread messages={messages} className="flex-1" />
+            <ConversationThread
+                messages={messages}
+                threadId={thread.id}
+                className="flex-1"
+            />
 
             <div className="border-t border-sidebar-border/50 p-4">
                 <ChatInput
@@ -55,6 +62,8 @@ export default function MootShow({ thread, threads, mootConfig }: Props) {
                     onSubmit={handleSendMessage}
                     disabled={submitting || isProcessing}
                     placeholder="Send a follow-up..."
+                    synthesisFormat={synthesisFormat}
+                    onSynthesisFormatChange={setSynthesisFormat}
                 />
             </div>
         </MootLayout>

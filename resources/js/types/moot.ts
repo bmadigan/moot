@@ -18,8 +18,16 @@ export interface Thread {
     latest_message?: Message | null;
 }
 
+export interface MootProviderMeta {
+    label: string;
+    color: string;
+    pill: string;
+    models?: string[];
+    default_model?: string;
+}
+
 export interface MootConfig {
-    providers: Record<string, Record<string, { label: string; color: string; pill: string; models: Record<string, string>; default_model: string }>>;
+    providers: Record<string, Record<string, MootProviderMeta>>;
     default_providers: string[];
     default_synthesis_format: SynthesisFormat;
 }

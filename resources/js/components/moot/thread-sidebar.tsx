@@ -1,5 +1,6 @@
 import { Link, router } from '@inertiajs/react';
 import { Plus, Trash2 } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type { Thread } from '@/types/moot';
@@ -16,6 +17,18 @@ export function ThreadSidebar({ threads, activeThreadId }: ThreadSidebarProps) {
         if (confirm('Delete this thread?')) {
             router.delete(`/moot/${thread.id}`);
         }
+    }
+
+    function formatDate(dateStr: string): string {
+        const date = new Date(dateStr);
+        const now = new Date();
+        const diffMs = now.getTime() - date.getTime();
+        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+        if (diffDays === 0) return 'Today';
+        if (diffDays === 1) return 'Yesterday';
+        if (diffDays < 7) return `${diffDays}d ago`;
+        return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
     }
 
     return (
@@ -39,20 +52,32 @@ export function ThreadSidebar({ threads, activeThreadId }: ThreadSidebarProps) {
                         key={thread.id}
                         href={`/moot/${thread.id}`}
                         className={cn(
-                            'group flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors hover:bg-accent/50',
+                            'group flex flex-col gap-1 rounded-md px-3 py-2 transition-colors hover:bg-accent/50',
                             activeThreadId === thread.id &&
-                                'bg-accent/70 font-medium',
+                                'bg-accent/70',
                         )}
                     >
-                        <span className="min-w-0 flex-1 truncate">
+                        <span className={cn(
+                            'truncate text-sm',
+                            activeThreadId === thread.id && 'font-medium',
+                        )}>
                             {thread.title || 'New Thread'}
                         </span>
-                        <button
-                            onClick={(e) => handleDelete(e, thread)}
-                            className="shrink-0 opacity-0 transition-opacity group-hover:opacity-100"
-                        >
-                            <Trash2 className="size-3.5 text-muted-foreground hover:text-destructive" />
-                        </button>
+                        <div className="flex items-center gap-1.5">
+                            <Badge variant="outline" className="px-1 py-0 text-[9px] uppercase">
+                                {thread.mode}
+                            </Badge>
+                            <span className="text-[10px] text-muted-foreground">
+                                {formatDate(thread.updated_at)}
+                            </span>
+                            <span className="flex-1" />
+                            <button
+                                onClick={(e) => handleDelete(e, thread)}
+                                className="shrink-0 opacity-0 transition-opacity group-hover:opacity-100"
+                            >
+                                <Trash2 className="size-3 text-muted-foreground hover:text-destructive" />
+                            </button>
+                        </div>
                     </Link>
                 ))}
             </nav>

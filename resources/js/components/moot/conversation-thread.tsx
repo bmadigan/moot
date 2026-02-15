@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { AdvisorCard, AdvisorCardSkeleton } from '@/components/moot/advisor-card';
+import { ErrorBanner } from '@/components/moot/error-banner';
+import { MessageFooter } from '@/components/moot/message-footer';
 import { SynthesisPanel } from '@/components/moot/synthesis-panel';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -8,11 +10,13 @@ import type { Message } from '@/types/moot';
 
 interface ConversationThreadProps {
     messages: Message[];
+    threadId?: string;
     className?: string;
 }
 
 export function ConversationThread({
     messages,
+    threadId,
     className,
 }: ConversationThreadProps) {
     const bottomRef = React.useRef<HTMLDivElement>(null);
@@ -24,14 +28,24 @@ export function ConversationThread({
     return (
         <div className={cn('flex-1 space-y-6 overflow-y-auto p-6', className)}>
             {messages.map((message) => (
-                <MessageGroup key={message.id} message={message} />
+                <MessageGroup
+                    key={message.id}
+                    message={message}
+                    threadId={threadId}
+                />
             ))}
             <div ref={bottomRef} />
         </div>
     );
 }
 
-function MessageGroup({ message }: { message: Message }) {
+function MessageGroup({
+    message,
+    threadId,
+}: {
+    message: Message;
+    threadId?: string;
+}) {
     const [allExpanded, setAllExpanded] = React.useState(false);
     const responses = message.advisor_responses ?? [];
     const isLoading =
@@ -46,6 +60,14 @@ function MessageGroup({ message }: { message: Message }) {
                     {new Date(message.created_at).toLocaleTimeString()}
                 </span>
             </div>
+
+            {/* Error banner */}
+            {threadId && (
+                <ErrorBanner
+                    message={message}
+                    threadId={threadId}
+                />
+            )}
 
             {/* Advisor responses */}
             {responses.length > 0 && (
@@ -96,6 +118,9 @@ function MessageGroup({ message }: { message: Message }) {
                     <AdvisorCardSkeleton />
                 </div>
             )}
+
+            {/* Cost footer */}
+            {responses.length > 0 && <MessageFooter responses={responses} />}
 
             {/* Synthesis */}
             <SynthesisPanel message={message} />

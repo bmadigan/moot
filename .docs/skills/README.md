@@ -47,20 +47,20 @@
 
 ## Phase 5: Multi-Turn
 
-- [ ] **Skill 27** — Conversation History in Agent Prompts
-- [ ] **Skill 28** — Thread Sidebar (Full) · `thread-sidebar.tsx`
-- [ ] **Skill 29** — Collapsed/Expanded Cards
+- [x] **Skill 27** — Conversation History in Agent Prompts
+- [x] **Skill 28** — Thread Sidebar (Full) · `thread-sidebar.tsx`
+- [x] **Skill 29** — Collapsed/Expanded Cards
 
 ## Phase 6: Configuration & Polish
 
-- [ ] **Skill 30** — Synthesis Format Toggle
-- [ ] **Skill 31** — Provider Config Popover · `provider-config-popover.tsx`
-- [ ] **Skill 32** — Cost Tracking Display · `message-footer.tsx`
-- [ ] **Skill 33** — `moot:install` Artisan Command · `MootInstall.php`
-- [ ] **Skill 34** — `moot:ask` Artisan Command · `MootAsk.php`
-- [ ] **Skill 35** — Redis Queue Config
-- [ ] **Skill 36** — Counselors CLI Integration · `RunCounselorsCli.php`
-- [ ] **Skill 37** — Error Handling UI · `error-banner.tsx`
+- [x] **Skill 30** — Synthesis Format Toggle
+- [x] **Skill 31** — Provider Config Popover · `provider-config-popover.tsx`
+- [x] **Skill 32** — Cost Tracking Display · `message-footer.tsx`
+- [x] **Skill 33** — `moot:install` Artisan Command · `MootInstall.php`
+- [x] **Skill 34** — `moot:ask` Artisan Command · `MootAsk.php`
+- [x] **Skill 35** — Redis Queue Config
+- [x] **Skill 36** — Counselors CLI Integration · `RunCounselorsCli.php`
+- [x] **Skill 37** — Error Handling UI · `error-banner.tsx`
 
 ## Phase 7: Distribution
 

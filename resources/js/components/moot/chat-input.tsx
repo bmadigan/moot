@@ -10,6 +10,8 @@ interface ChatInputProps {
     disabled?: boolean;
     placeholder?: string;
     className?: string;
+    synthesisFormat?: 'markdown' | 'structured';
+    onSynthesisFormatChange?: (format: 'markdown' | 'structured') => void;
 }
 
 export function ChatInput({
@@ -19,6 +21,8 @@ export function ChatInput({
     disabled = false,
     placeholder = 'Ask your Moot...',
     className,
+    synthesisFormat,
+    onSynthesisFormatChange,
 }: ChatInputProps) {
     const textareaRef = React.useRef<HTMLTextAreaElement>(null);
 
@@ -57,16 +61,35 @@ export function ChatInput({
                 rows={1}
                 className="w-full resize-none bg-transparent px-4 py-3 pr-12 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed"
             />
-            <Button
-                type="button"
-                size="icon"
-                variant="ghost"
-                onClick={onSubmit}
-                disabled={disabled || !value.trim()}
-                className="absolute right-2 bottom-2 size-8"
-            >
-                <Send className="size-4" />
-            </Button>
+            <div className="absolute right-2 bottom-2 flex items-center gap-1">
+                {synthesisFormat && onSynthesisFormatChange && (
+                    <button
+                        type="button"
+                        onClick={() =>
+                            onSynthesisFormatChange(
+                                synthesisFormat === 'markdown'
+                                    ? 'structured'
+                                    : 'markdown',
+                            )
+                        }
+                        disabled={disabled}
+                        className="rounded px-1.5 py-1 text-[10px] font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground disabled:opacity-50"
+                        title={`Synthesis: ${synthesisFormat}`}
+                    >
+                        {synthesisFormat === 'markdown' ? 'MD' : 'JSON'}
+                    </button>
+                )}
+                <Button
+                    type="button"
+                    size="icon"
+                    variant="ghost"
+                    onClick={onSubmit}
+                    disabled={disabled || !value.trim()}
+                    className="size-8"
+                >
+                    <Send className="size-4" />
+                </Button>
+            </div>
         </div>
     );
 }

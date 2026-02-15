@@ -16,6 +16,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Concurrency;
+use Illuminate\Support\Str;
 use Throwable;
 
 class DispatchAdvisors implements ShouldQueue
@@ -33,6 +34,13 @@ class DispatchAdvisors implements ShouldQueue
         $thread = $this->message->thread;
         $providers = $thread->providers;
         $providerConfig = $thread->provider_config ?? [];
+
+        // Auto-generate title from first message if missing
+        if (! $thread->title) {
+            $thread->update([
+                'title' => Str::limit($this->message->content, 80),
+            ]);
+        }
 
         // Fan out to all providers concurrently
         $tasks = [];
@@ -83,8 +91,12 @@ class DispatchAdvisors implements ShouldQueue
             $agent = AdvisorRegistry::getAgent($provider);
 
             $model = $config['model'] ?? null;
+
+            // Build prompt with conversation history for multi-turn
+            $prompt = $this->buildPromptWithHistory($provider);
+
             $response = $agent->prompt(
-                $this->message->content,
+                $prompt,
                 provider: $provider,
                 model: $model,
             );
@@ -122,6 +134,45 @@ class DispatchAdvisors implements ShouldQueue
 
             AdvisorResponded::dispatch($advisorResponse, $this->message->thread_id);
         }
+    }
+
+    protected function buildPromptWithHistory(string $provider): string
+    {
+        $thread = $this->message->thread;
+
+        // Get all previous messages in this thread (excluding the current one)
+        $previousMessages = $thread->messages()
+            ->where('id', '!=', $this->message->id)
+            ->orderBy('created_at')
+            ->get();
+
+        // If this is the first message, just return the content directly
+        if ($previousMessages->isEmpty()) {
+            return $this->message->content;
+        }
+
+        // Build conversation context
+        $parts = ["The following is a multi-turn conversation. Please consider the full context when responding.\n"];
+
+        foreach ($previousMessages as $prevMessage) {
+            $parts[] = "User: {$prevMessage->content}";
+
+            // Include the provider's own previous response if available
+            $prevResponse = $prevMessage->advisorResponses()
+                ->where('provider', $provider)
+                ->whereNotNull('content')
+                ->first();
+
+            if ($prevResponse) {
+                $parts[] = "You previously responded: {$prevResponse->content}";
+            }
+
+            $parts[] = ''; // blank line separator
+        }
+
+        $parts[] = "User: {$this->message->content}";
+
+        return implode("\n", $parts);
     }
 
     protected function runSynthesis(): void

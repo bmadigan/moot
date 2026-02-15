@@ -20,6 +20,7 @@ class Thread extends Model
         'mode',
         'providers',
         'provider_config',
+        'conversation_ids',
         'context_paths',
     ];
 
@@ -29,6 +30,7 @@ class Thread extends Model
             'mode' => ConsultationMode::class,
             'providers' => 'array',
             'provider_config' => 'array',
+            'conversation_ids' => 'array',
             'context_paths' => 'array',
         ];
     }
