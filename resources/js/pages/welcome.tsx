@@ -1,16 +1,6 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import { login, register } from '@/routes';
 
-function MootIcon({ className }: { className?: string }) {
-    return (
-        <svg viewBox="0 0 120 120" className={className} fill="white" xmlns="http://www.w3.org/2000/svg">
-            <path d="M60,10A50,50,0,1,0,110,60,50.06,50.06,0,0,0,60,10Zm0,92A42,42,0,1,1,102,60,42.05,42.05,0,0,1,60,102Z" />
-            <path d="M72.5,45.5H53.1a6.6,6.6,0,0,0-6.6,6.6V61.5a6.6,6.6,0,0,0,6.6,6.6h2.2v6.6l8.8-6.6h8.4a6.6,6.6,0,0,0,6.6-6.6V52.1A6.6,6.6,0,0,0,72.5,45.5Z" />
-            <path d="M75.2,40.5H62.5a8.2,8.2,0,0,0-8.2,8.2v1.5h18.2a8.2,8.2,0,0,1,8.2,8.2V68.2h1.5a8.2,8.2,0,0,0,8.2-8.2V48.7A8.2,8.2,0,0,0,75.2,40.5Z" opacity="0.6" />
-        </svg>
-    );
-}
-
 export default function Welcome({ canRegister = true }: { canRegister?: boolean }) {
     const { auth } = usePage().props;
 
@@ -28,11 +18,8 @@ export default function Welcome({ canRegister = true }: { canRegister?: boolean 
                 {/* Navigation */}
                 <nav className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-sm">
                     <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-                        <Link href="/" className="flex items-center gap-3">
-                            <div className="flex size-9 items-center justify-center rounded-lg bg-primary">
-                                <MootIcon className="size-6" />
-                            </div>
-                            <span className="text-lg font-semibold tracking-tight">Moot</span>
+                        <Link href="/" className="flex items-center">
+                            <img src="/logo.png" alt="Moot" className="h-20" />
                         </Link>
 
                         <div className="flex items-center gap-3">
@@ -70,23 +57,27 @@ export default function Welcome({ canRegister = true }: { canRegister?: boolean 
                     <div className="mx-auto max-w-6xl">
                         <div className="mx-auto max-w-3xl text-center">
                             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-sm text-muted-foreground">
-                                <span className="inline-block size-2 rounded-full bg-secondary" />
-                                Built on the Laravel AI SDK
+                                <span className="inline-block size-2 rounded-full bg-green-500" />
+                                Open source &middot; Self-hosted &middot; Laravel 12
                             </div>
 
                             <h1
                                 className="mb-6 text-6xl leading-none tracking-tight sm:text-7xl lg:text-8xl"
                                 style={{ fontFamily: "'Bangers', cursive" }}
                             >
-                                <span className="text-foreground">Assemble Your</span>
+                                <span className="text-foreground">Stop Asking One AI.</span>
                                 <br />
-                                <span className="text-primary">AI Council</span>
+                                <span className="text-primary">Ask All of Them.</span>
                             </h1>
 
-                            <p className="mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-                                One prompt. Multiple AI advisors. Real-time responses. A synthesized recommendation.
-                                Moot fans out your questions to Claude, GPT, and Gemini simultaneously, then
-                                synthesizes their answers into a single, unified verdict.
+                            <p className="mx-auto mb-4 max-w-2xl text-lg leading-relaxed text-muted-foreground">
+                                Moot sends your prompt to Claude, GPT, and Gemini simultaneously, shows their
+                                responses side-by-side, then synthesizes a single recommendation that
+                                identifies where they agree, where they differ, and what you should actually do.
+                            </p>
+
+                            <p className="mx-auto mb-10 max-w-xl text-sm text-muted-foreground/70">
+                                Built on the Laravel AI SDK. Bring your own API keys. Deploy anywhere you run Laravel.
                             </p>
 
                             <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
@@ -312,81 +303,34 @@ export default function Welcome({ canRegister = true }: { canRegister?: boolean 
                     </div>
                 </section>
 
-                {/* Two Modes */}
+                {/* How It Helps */}
                 <section className="border-t border-border bg-card px-6 py-20 lg:py-28">
                     <div className="mx-auto max-w-6xl">
                         <div className="mx-auto mb-16 max-w-3xl text-center">
                             <h2 className="mb-4 text-3xl font-semibold tracking-tight lg:text-4xl">
-                                Two Ways to Moot
+                                One Prompt, Three Perspectives
                             </h2>
                             <p className="text-lg leading-relaxed text-muted-foreground">
-                                Choose the right mode for your question.
+                                Ask your question once and get answers from Claude, GPT, and Gemini simultaneously,
+                                then a synthesized recommendation that weighs all three perspectives.
                             </p>
                         </div>
 
-                        <div className="grid gap-6 lg:grid-cols-2">
-                            <div className="rounded-xl border border-border bg-background p-8">
-                                <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
-                                    <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-                                    </svg>
-                                    Quick Moot
-                                </div>
-                                <h3 className="mb-3 text-xl font-semibold">API-Direct Consultation</h3>
-                                <p className="mb-4 text-sm leading-relaxed text-muted-foreground">
-                                    AI SDK agents hit provider APIs directly. Best for general questions, architecture
-                                    decisions, code review, and anything that doesn&apos;t need access to your local
-                                    codebase.
-                                </p>
-                                <div className="flex flex-wrap gap-2">
-                                    <span className="inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1 text-xs">
-                                        <span className="size-2 rounded-full bg-[#D97706]" /> Claude
-                                    </span>
-                                    <span className="inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1 text-xs">
-                                        <span className="size-2 rounded-full bg-[#10B981]" /> GPT
-                                    </span>
-                                    <span className="inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1 text-xs">
-                                        <span className="size-2 rounded-full bg-[#3B82F6]" /> Gemini
-                                    </span>
-                                </div>
+                        <div className="mx-auto max-w-3xl rounded-xl border border-border bg-background p-8">
+                            <div className="flex flex-wrap justify-center gap-3">
+                                <span className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-sm">
+                                    <span className="size-2 rounded-full bg-[#D97706]" /> Claude
+                                </span>
+                                <span className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-sm">
+                                    <span className="size-2 rounded-full bg-[#10B981]" /> GPT
+                                </span>
+                                <span className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-sm">
+                                    <span className="size-2 rounded-full bg-[#3B82F6]" /> Gemini
+                                </span>
                             </div>
-
-                            <div className="rounded-xl border border-border bg-background p-8">
-                                <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-secondary/10 px-3 py-1 text-sm font-medium text-secondary">
-                                    <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z" />
-                                    </svg>
-                                    Code Moot
-                                </div>
-                                <h3 className="mb-3 text-xl font-semibold">Codebase-Aware Consultation</h3>
-                                <p className="mb-4 text-sm leading-relaxed text-muted-foreground">
-                                    Powered by Aaron Francis&apos;s{' '}
-                                    <a
-                                        href="https://github.com/aarondfrancis/counselors"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="font-medium text-primary underline underline-offset-4 hover:text-primary/80"
-                                    >
-                                        Counselors CLI
-                                    </a>
-                                    . Dispatches to local coding agents that can read your files and understand your
-                                    project context. Perfect for refactoring, debugging, and implementation questions.
-                                </p>
-                                <div className="flex flex-wrap gap-2">
-                                    <span className="inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1 text-xs">
-                                        <span className="size-2 rounded-full bg-[#D97706]" /> Claude Code
-                                    </span>
-                                    <span className="inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1 text-xs">
-                                        <span className="size-2 rounded-full bg-[#10B981]" /> Codex CLI
-                                    </span>
-                                    <span className="inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1 text-xs">
-                                        <span className="size-2 rounded-full bg-[#3B82F6]" /> Gemini CLI
-                                    </span>
-                                    <span className="inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1 text-xs">
-                                        <span className="size-2 rounded-full bg-[#8B5CF6]" /> Amp
-                                    </span>
-                                </div>
-                            </div>
+                            <p className="mt-4 text-center text-sm text-muted-foreground">
+                                Bring your own API keys. Select which providers to consult for each question.
+                            </p>
                         </div>
                     </div>
                 </section>
@@ -414,13 +358,6 @@ export default function Welcome({ canRegister = true }: { canRegister?: boolean 
                                     <code className="rounded bg-background px-1 py-0.5 text-[0.85em]">RemembersConversations</code>,
                                     and <code className="rounded bg-background px-1 py-0.5 text-[0.85em]">HasStructuredOutput</code> for
                                     multi-turn context and structured synthesis.
-                                </p>
-                            </div>
-                            <div className="rounded-xl border border-border bg-card p-6">
-                                <div className="mb-3 text-sm font-semibold text-primary">Counselors CLI</div>
-                                <p className="text-sm leading-relaxed text-muted-foreground">
-                                    Aaron Francis&apos;s open-source tool for dispatching prompts to local coding agents like
-                                    Claude Code, Codex CLI, and Gemini CLI — with full access to your codebase.
                                 </p>
                             </div>
                             <div className="rounded-xl border border-border bg-card p-6">
@@ -495,11 +432,6 @@ export default function Welcome({ canRegister = true }: { canRegister?: boolean 
                                         <td className="py-3 px-3 text-center">Some</td>
                                     </tr>
                                     <tr className="border-b border-border/50">
-                                        <td className="py-3 pr-4">Codebase-aware (Counselors)</td>
-                                        <td className="py-3 px-3 text-center text-primary">Yes</td>
-                                        <td className="py-3 px-3 text-center">No</td>
-                                    </tr>
-                                    <tr className="border-b border-border/50">
                                         <td className="py-3 pr-4">Open source + Laravel-native</td>
                                         <td className="py-3 px-3 text-center text-primary">Yes</td>
                                         <td className="py-3 px-3 text-center">Rare</td>
@@ -511,51 +443,6 @@ export default function Welcome({ canRegister = true }: { canRegister?: boolean 
                                     </tr>
                                 </tbody>
                             </table>
-                        </div>
-                    </div>
-                </section>
-
-                {/* Architecture Diagram */}
-                <section className="border-t border-border px-6 py-20 lg:py-28">
-                    <div className="mx-auto max-w-6xl">
-                        <div className="mx-auto mb-16 max-w-3xl text-center">
-                            <h2 className="mb-4 text-3xl font-semibold tracking-tight lg:text-4xl">
-                                Under the Hood
-                            </h2>
-                            <p className="text-lg leading-relaxed text-muted-foreground">
-                                Modern Laravel 12 patterns, from fan-out concurrency to real-time broadcasting.
-                            </p>
-                        </div>
-
-                        <div className="mx-auto max-w-3xl rounded-xl border border-border bg-card p-6 lg:p-10">
-                            <pre className="overflow-x-auto text-xs leading-relaxed text-muted-foreground sm:text-sm">
-{`User submits prompt
-        │
-        ▼
-┌────────────────────┐
-│   Laravel Backend   │
-│                     │
-│  ┌───────────────┐  │     ┌──────────────┐
-│  │ AI SDK Agents ├──┼────►│  Anthropic    │
-│  │ (Quick Moot)  ├──┼────►│  OpenAI       │
-│  │               ├──┼────►│  Gemini       │
-│  └───────────────┘  │     └──────────────┘
-│                     │
-│  ┌───────────────┐  │     ┌──────────────┐
-│  │ Counselors    ├──┼────►│ Claude Code   │
-│  │ (Code Moot)   ├──┼────►│ Codex CLI     │
-│  │               ├──┼────►│ Gemini CLI    │
-│  └───────────────┘  │     └──────────────┘
-│                     │
-│  Synthesizer Agent  │◄── Reads all responses
-│  (markdown or JSON) │    produces unified
-│                     │    recommendation
-└─────────┬──────────┘
-          │
-          ▼
-    React Frontend
-    (real-time via Reverb)`}
-                            </pre>
                         </div>
                     </div>
                 </section>
@@ -613,11 +500,9 @@ export default function Welcome({ canRegister = true }: { canRegister?: boolean 
                 <footer className="border-t border-border px-6 py-8">
                     <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 sm:flex-row">
                         <div className="flex items-center gap-3">
-                            <div className="flex size-7 items-center justify-center rounded-md bg-primary">
-                                <MootIcon className="size-4" />
-                            </div>
+                            <img src="/logo.png" alt="Moot" className="h-7" />
                             <span className="text-sm text-muted-foreground">
-                                Moot &mdash; Open source, MIT licensed
+                                Open source, MIT licensed
                             </span>
                         </div>
                         <div className="flex items-center gap-6 text-sm text-muted-foreground">
@@ -636,14 +521,6 @@ export default function Welcome({ canRegister = true }: { canRegister?: boolean 
                                 className="hover:text-foreground"
                             >
                                 Laravel Docs
-                            </a>
-                            <a
-                                href="https://github.com/aarondfrancis/counselors"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="hover:text-foreground"
-                            >
-                                Counselors
                             </a>
                         </div>
                     </div>

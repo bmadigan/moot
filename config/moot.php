@@ -42,28 +42,6 @@ return [
                 'default_model' => 'gemini-2.5-pro',
             ],
         ],
-        'code' => [
-            'claude' => [
-                'label' => 'Claude Code',
-                'color' => '#D97706',
-                'pill' => 'CC',
-            ],
-            'codex' => [
-                'label' => 'Codex',
-                'color' => '#10B981',
-                'pill' => 'CDX',
-            ],
-            'gemini' => [
-                'label' => 'Gemini CLI',
-                'color' => '#3B82F6',
-                'pill' => 'GCL',
-            ],
-            'amp' => [
-                'label' => 'Amp',
-                'color' => '#8B5CF6',
-                'pill' => 'AMP',
-            ],
-        ],
     ],
 
     /*
@@ -90,15 +68,5 @@ return [
     'agent_timeout' => env('MOOT_AGENT_TIMEOUT', 120),
 
     'synthesis_timeout' => env('MOOT_SYNTHESIS_TIMEOUT', 60),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Counselors CLI (optional)
-    |--------------------------------------------------------------------------
-    */
-
-    'counselors_binary' => env('COUNSELORS_BINARY', 'counselors'),
-
-    'counselors_output_dir' => env('COUNSELORS_OUTPUT_DIR', './agents/counselors'),
 
 ];

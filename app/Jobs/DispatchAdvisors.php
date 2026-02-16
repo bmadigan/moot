@@ -16,6 +16,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Throwable;
 
@@ -23,17 +24,27 @@ class DispatchAdvisors implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public int $timeout = 300;
+
     public function __construct(
         public Message $message,
     ) {}
+
+    public function failed(?Throwable $exception): void
+    {
+        $this->message->update(['status' => MessageStatus::Failed]);
+
+        Log::error('DispatchAdvisors job failed', [
+            'message_id' => $this->message->id,
+            'exception' => $exception?->getMessage(),
+        ]);
+    }
 
     public function handle(): void
     {
         $this->message->update(['status' => MessageStatus::Running]);
 
         $thread = $this->message->thread;
-        $providers = $thread->providers;
-        $providerConfig = $thread->provider_config ?? [];
 
         // Auto-generate title from first message if missing
         if (! $thread->title) {
@@ -41,6 +52,15 @@ class DispatchAdvisors implements ShouldQueue
                 'title' => Str::limit($this->message->content, 80),
             ]);
         }
+
+        $this->dispatchViaApi();
+    }
+
+    protected function dispatchViaApi(): void
+    {
+        $thread = $this->message->thread;
+        $providers = $thread->providers;
+        $providerConfig = $thread->provider_config ?? [];
 
         // Query each provider (individual failures are handled inside queryAdvisor)
         $queried = false;
@@ -58,6 +78,13 @@ class DispatchAdvisors implements ShouldQueue
 
             return;
         }
+
+        $this->finalize();
+    }
+
+    protected function finalize(): void
+    {
+        $thread = $this->message->thread;
 
         // Check if any advisor succeeded
         $hasResults = $this->message->advisorResponses()->whereNotNull('content')->exists();
@@ -190,6 +217,11 @@ class DispatchAdvisors implements ShouldQueue
 
             $this->message->update($update);
         } catch (Throwable $e) {
+            Log::error('Synthesis failed', [
+                'message_id' => $this->message->id,
+                'exception' => $e->getMessage(),
+            ]);
+
             $this->message->update([
                 'synthesis' => "Synthesis failed: {$e->getMessage()}",
             ]);

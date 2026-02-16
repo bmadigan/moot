@@ -1,6 +1,5 @@
 import { Link, router } from '@inertiajs/react';
 import { Plus, Trash2 } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type { Thread } from '@/types/moot';
@@ -22,8 +21,10 @@ export function ThreadSidebar({ threads, activeThreadId }: ThreadSidebarProps) {
     function formatDate(dateStr: string): string {
         const date = new Date(dateStr);
         const now = new Date();
-        const diffMs = now.getTime() - date.getTime();
-        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const target = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        const diffDays = Math.round((today.getTime() - target.getTime()) / (1000 * 60 * 60 * 24));
 
         if (diffDays === 0) return 'Today';
         if (diffDays === 1) return 'Yesterday';
@@ -64,9 +65,6 @@ export function ThreadSidebar({ threads, activeThreadId }: ThreadSidebarProps) {
                             {thread.title || 'New Thread'}
                         </span>
                         <div className="flex items-center gap-1.5">
-                            <Badge variant="outline" className="px-1 py-0 text-[9px] uppercase">
-                                {thread.mode}
-                            </Badge>
                             <span className="text-[10px] text-muted-foreground">
                                 {formatDate(thread.updated_at)}
                             </span>

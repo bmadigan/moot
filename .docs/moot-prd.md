@@ -14,7 +14,7 @@
 
 Moot is an open-source Laravel 12 application that fans out your prompts to multiple AI providers simultaneously, presents their responses side-by-side, and synthesizes a unified recommendation. It supports persistent multi-turn conversations, letting you drill deeper with your council of AI advisors across sessions.
 
-Built on the **Laravel AI SDK** (`laravel/ai`, released February 5, 2026) with optional integration with Aaron Francis's **[Counselors CLI](https://github.com/aarondfrancis/counselors)** for code-aware consultations.
+Built on the **Laravel AI SDK** (`laravel/ai`, released February 5, 2026).
 
 ### The Problem
 
@@ -58,7 +58,7 @@ The Laravel AI SDK shipped on February 5, 2026. It provides a unified, first-par
 
 4. Provide a foundation others can extend (custom agents, providers, synthesis strategies)
 5. Showcase modern Laravel 12 patterns: AI SDK agents, Concurrency, Reverb broadcasting, queues
-6. Optional Counselors CLI integration for code-aware consultations
+6. Provide a foundation others can extend (custom agents, providers, synthesis strategies)
 
 ### Non-Goals
 
@@ -79,14 +79,8 @@ User submits prompt (or follow-up)
 │                     │
 │  ┌───────────────┐  │     ┌──────────────┐
 │  │ AI SDK Agents ├──┼────►│  Anthropic    │
-│  │ (native)      ├──┼────►│  OpenAI       │
+│  │               ├──┼────►│  OpenAI       │
 │  │               ├──┼────►│  Gemini       │
-│  └───────────────┘  │     └──────────────┘
-│                     │
-│  ┌───────────────┐  │     ┌──────────────┐
-│  │ Counselors    ├──┼────►│ Claude Code   │
-│  │ CLI (code)    ├──┼────►│ Codex CLI     │
-│  │               ├──┼────►│ Gemini CLI    │
 │  └───────────────┘  │     └──────────────┘
 │                     │
 │  Synthesizer Agent  │◄── Reads all responses,
@@ -99,13 +93,6 @@ User submits prompt (or follow-up)
     (real-time via Reverb)
     (persistent threads)
 ```
-
-### Two Modes
-
-| Mode | How It Works | Best For |
-|------|-------------|----------|
-| **⚡ Quick Moot** | AI SDK agents hit provider APIs directly | General questions, architecture, code review |
-| **🖥️ Code Moot** | Counselors CLI dispatches to local coding agents | Codebase-aware answers, refactoring, debugging |
 
 ### Request Flow
 
@@ -134,7 +121,6 @@ User submits prompt (or follow-up)
 | Queue | Redis + Laravel Horizon |
 | Database | SQLite (dev) / PostgreSQL (prod) |
 | CLI | Laravel Prompts (bundled with Laravel 12) |
-| CLI Integration | Counselors CLI (optional) |
 
 ---
 
@@ -163,10 +149,6 @@ Earth-tone light theme inspired by Claude Code's aesthetic. Monospace typography
 | Anthropic | `#D97706` amber | ANT |
 | OpenAI | `#10B981` emerald | OAI |
 | Gemini | `#3B82F6` blue | GEM |
-| Claude Code | `#D97706` amber | CC |
-| Codex CLI | `#10B981` emerald | CDX |
-| Gemini CLI | `#3B82F6` blue | GCL |
-| Amp | `#8B5CF6` violet | AMP |
 
 ### Typography
 
@@ -195,7 +177,7 @@ Thread (1) ──► (N) Message (1) ──► (N) AdvisorResponse
 | `mode` | enum(quick, code) | Dispatch method |
 | `providers` | json | Array of provider keys |
 | `provider_config` | json, nullable | Per-provider overrides (model, temperature) |
-| `context_paths` | json, nullable | File paths for code mode |
+| `context_paths` | json, nullable | Reserved for future use |
 | `created_at` | timestamp | |
 | `updated_at` | timestamp | |
 
@@ -243,8 +225,6 @@ moot/
 │   │   │   ├── GptAdvisor.php
 │   │   │   ├── GeminiAdvisor.php
 │   │   │   └── Synthesizer.php
-│   │   ├── Tools/
-│   │   │   └── RunCounselorsCli.php
 │   │   └── Middleware/
 │   │       └── InjectProjectContext.php
 │   ├── Models/
@@ -488,7 +468,7 @@ Users can export any thread as a Markdown file. The export includes all prompts,
 
 ### 10.6 Artisan Commands (Laravel Prompts)
 
-**`php artisan moot:install`** — Interactive setup wizard using Laravel Prompts. Walks through provider selection, API key entry, migration running, and optional Counselors CLI detection.
+**`php artisan moot:install`** — Interactive setup wizard using Laravel Prompts. Walks through provider selection, API key entry, and migration running.
 
 **`php artisan moot:ask`** — CLI-based consultation. Prompts for a question, selects providers, shows a spinner while advisors deliberate, then outputs a formatted table of responses and the synthesis.
 
@@ -570,10 +550,6 @@ Concurrency::run([
 
 ```php
 return [
-    // Counselors CLI (optional)
-    'counselors_binary'    => env('COUNSELORS_BINARY', 'counselors'),
-    'counselors_output_dir' => env('COUNSELORS_OUTPUT_DIR', './agents/counselors'),
-
     // Defaults
     'default_providers' => ['anthropic', 'openai', 'gemini'],
     'default_synthesis_format' => 'markdown', // or 'structured'
@@ -599,12 +575,6 @@ return [
                 'models'  => ['gemini-2.5-pro', 'gemini-2.5-flash'],
                 'default_model' => 'gemini-2.5-pro',
             ],
-        ],
-        'code' => [
-            'claude' => ['label' => 'Claude Code', 'color' => '#D97706'],
-            'codex'  => ['label' => 'Codex',       'color' => '#10B981'],
-            'gemini' => ['label' => 'Gemini CLI',  'color' => '#3B82F6'],
-            'amp'    => ['label' => 'Amp',         'color' => '#8B5CF6'],
         ],
     ],
 
@@ -640,10 +610,6 @@ REVERB_APP_SECRET=your-secret
 
 # Queue
 QUEUE_CONNECTION=redis
-
-# Counselors CLI (optional)
-COUNSELORS_BINARY=counselors
-COUNSELORS_OUTPUT_DIR=./agents/counselors
 
 # Moot
 MOOT_AGENT_TIMEOUT=120
@@ -794,7 +760,6 @@ This gives Moot the "three interfaces" pattern Laravel advocates: **web UI**, **
 
 - [ ] Docker Compose with all services
 - [ ] Export thread as Markdown
-- [ ] Graceful degradation when Counselors CLI not installed
 - [ ] Error handling UI (timeout, rate limit, invalid key)
 - [ ] Keyboard shortcuts (⌘+Enter to send, ⌘+N new thread, etc.)
 - [ ] README with screenshots and animated GIF demo
@@ -825,7 +790,6 @@ This gives Moot the "three interfaces" pattern Laravel advocates: **web UI**, **
 | Multi-turn context window overflow | Medium | Medium | Truncate oldest messages, track token counts, warn user |
 | High API costs from parallel fan-out | Medium | Medium | Cost tracking in UI, per-provider model selection, budget alerts |
 | Rate limiting from parallel calls | Medium | Medium | Configurable concurrency limit, per-provider backoff, queue throttling |
-| Counselors CLI changes or abandoned | Medium | Low | CLI is optional, SDK-only mode works independently |
 | Provider pricing changes | High | Low | Pricing config is user-editable, not hardcoded business logic |
 
 ---

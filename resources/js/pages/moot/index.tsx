@@ -5,7 +5,12 @@ import { ProviderSelector } from '@/components/moot/provider-selector';
 import { ProviderStatusPanel } from '@/components/moot/provider-status';
 import MootLayout from '@/layouts/moot-layout';
 import type { BreadcrumbItem } from '@/types';
-import type { ConsultationMode, MootConfig, ProviderConfig, SynthesisFormat, Thread } from '@/types/moot';
+import type {
+    MootConfig,
+    ProviderConfig,
+    SynthesisFormat,
+    Thread,
+} from '@/types/moot';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Moot', href: '/moot' },
@@ -18,7 +23,6 @@ interface Props {
 
 export default function MootIndex({ threads, mootConfig }: Props) {
     const [prompt, setPrompt] = React.useState('');
-    const [mode, setMode] = React.useState<ConsultationMode>('quick');
     const [selectedProviders, setSelectedProviders] = React.useState<string[]>(() => {
         return mootConfig.default_providers.filter(
             (p) => mootConfig.provider_status[p]?.configured,
@@ -30,25 +34,11 @@ export default function MootIndex({ threads, mootConfig }: Props) {
     );
     const [submitting, setSubmitting] = React.useState(false);
 
-    const availableProviders = React.useMemo(() => {
-        return mootConfig.providers[mode] ?? {};
-    }, [mootConfig.providers, mode]);
+    const availableProviders = mootConfig.providers.quick ?? {};
 
-    const hasConfiguredProviders = React.useMemo(() => {
-        return selectedProviders.some(
-            (p) => mootConfig.provider_status[p]?.configured,
-        );
-    }, [selectedProviders, mootConfig.provider_status]);
-
-    // Reset providers when mode changes, only selecting configured ones
-    React.useEffect(() => {
-        const available = Object.keys(mootConfig.providers[mode] ?? {});
-        const configured = available.filter(
-            (p) => mootConfig.provider_status[p]?.configured,
-        );
-        setSelectedProviders(configured.length > 0 ? configured : available);
-        setProviderConfig({});
-    }, [mode, mootConfig.providers, mootConfig.provider_status]);
+    const hasConfiguredProviders = selectedProviders.some(
+        (p) => mootConfig.provider_status[p]?.configured,
+    );
 
     function handleSubmit() {
         if (!prompt.trim() || submitting || !hasConfiguredProviders) return;
@@ -58,7 +48,7 @@ export default function MootIndex({ threads, mootConfig }: Props) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const payload: any = {
             prompt: prompt.trim(),
-            mode,
+            mode: 'quick',
             providers: selectedProviders,
             synthesis_format: synthesisFormat,
         };
@@ -91,8 +81,6 @@ export default function MootIndex({ threads, mootConfig }: Props) {
                     />
 
                     <ProviderSelector
-                        mode={mode}
-                        onModeChange={setMode}
                         selectedProviders={selectedProviders}
                         onProvidersChange={setSelectedProviders}
                         availableProviders={availableProviders}

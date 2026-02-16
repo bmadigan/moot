@@ -23,15 +23,6 @@ class ThreadFactory extends Factory
         ];
     }
 
-    public function codeMode(): static
-    {
-        return $this->state(fn () => [
-            'mode' => ConsultationMode::Code,
-            'providers' => ['claude', 'codex', 'gemini'],
-            'context_paths' => ['app/', 'config/'],
-        ]);
-    }
-
     public function withProviders(array $providers): static
     {
         return $this->state(fn () => [

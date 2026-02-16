@@ -13,7 +13,7 @@ class StoreController extends Controller
     {
         $validated = $request->validate([
             'prompt' => ['required', 'string', 'max:10000'],
-            'mode' => ['sometimes', 'string', 'in:quick,code'],
+            'mode' => ['sometimes', 'string', 'in:quick'],
             'providers' => ['sometimes', 'array', 'min:1'],
             'providers.*' => ['string'],
             'provider_config' => ['sometimes', 'array'],

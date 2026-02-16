@@ -6,8 +6,7 @@ use App\Enums\SynthesisFormat;
 
 test('consultation mode has expected values', function () {
     expect(ConsultationMode::Quick->value)->toBe('quick');
-    expect(ConsultationMode::Code->value)->toBe('code');
-    expect(ConsultationMode::cases())->toHaveCount(2);
+    expect(ConsultationMode::cases())->toHaveCount(1);
 });
 
 test('message status has expected values', function () {

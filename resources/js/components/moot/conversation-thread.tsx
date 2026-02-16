@@ -5,6 +5,7 @@ import { ErrorBanner } from '@/components/moot/error-banner';
 import { MessageFooter } from '@/components/moot/message-footer';
 import { SynthesisPanel } from '@/components/moot/synthesis-panel';
 import { Button } from '@/components/ui/button';
+import { Spinner } from '@/components/ui/spinner';
 import { cn } from '@/lib/utils';
 import type { Message } from '@/types/moot';
 
@@ -57,7 +58,10 @@ function MessageGroup({
             <div className="rounded-lg bg-accent/40 px-4 py-3">
                 <p className="whitespace-pre-wrap text-sm">{message.content}</p>
                 <span className="mt-1 block text-xs text-muted-foreground">
-                    {new Date(message.created_at).toLocaleTimeString()}
+                    {new Date(message.created_at).toLocaleString(undefined, {
+                        month: 'short', day: 'numeric',
+                        hour: 'numeric', minute: '2-digit',
+                    })}
                 </span>
             </div>
 
@@ -107,16 +111,9 @@ function MessageGroup({
                 </div>
             )}
 
-            {/* Loading skeletons */}
-            {isLoading && responses.length === 0 && (
-                <div className="space-y-2">
-                    <span className="text-xs font-medium text-muted-foreground">
-                        Consulting advisors...
-                    </span>
-                    <AdvisorCardSkeleton />
-                    <AdvisorCardSkeleton />
-                    <AdvisorCardSkeleton />
-                </div>
+            {/* Loading indicator */}
+            {isLoading && (
+                <LoadingIndicator message={message} responseCount={responses.length} />
             )}
 
             {/* Cost footer */}
@@ -124,6 +121,61 @@ function MessageGroup({
 
             {/* Synthesis */}
             <SynthesisPanel message={message} />
+        </div>
+    );
+}
+
+function useElapsed(active: boolean): number {
+    const [elapsed, setElapsed] = React.useState(0);
+
+    React.useEffect(() => {
+        if (!active) {
+            setElapsed(0);
+            return;
+        }
+        const start = Date.now();
+        const tick = () => setElapsed(Math.floor((Date.now() - start) / 1000));
+        tick();
+        const id = setInterval(tick, 1000);
+        return () => clearInterval(id);
+    }, [active]);
+
+    return elapsed;
+}
+
+function LoadingIndicator({
+    message,
+    responseCount,
+}: {
+    message: Message;
+    responseCount: number;
+}) {
+    const elapsed = useElapsed(true);
+
+    const label =
+        message.status === 'pending'
+            ? 'Queuing request...'
+            : responseCount === 0
+              ? 'Consulting advisors...'
+              : 'Waiting for remaining advisors...';
+
+    return (
+        <div className="space-y-2">
+            <div className="flex items-center gap-2">
+                <Spinner className="size-3.5 text-muted-foreground" />
+                <span className="text-xs font-medium text-muted-foreground">
+                    {label}
+                </span>
+                <span className="text-xs tabular-nums text-muted-foreground/60">
+                    {elapsed}s
+                </span>
+            </div>
+            {responseCount === 0 && (
+                <>
+                    <AdvisorCardSkeleton />
+                    <AdvisorCardSkeleton />
+                </>
+            )}
         </div>
     );
 }

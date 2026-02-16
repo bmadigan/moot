@@ -1,7 +1,9 @@
+import * as React from 'react';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Sparkles } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Spinner } from '@/components/ui/spinner';
 import { cn } from '@/lib/utils';
 import type { Message, SynthesisStructured } from '@/types/moot';
 
@@ -32,7 +34,7 @@ export function SynthesisPanel({ message, className }: SynthesisPanelProps) {
                 </span>
             </div>
 
-            {isSynthesizing && <SynthesisSkeleton />}
+            {isSynthesizing && <SynthesizingIndicator />}
 
             {hasSynthesis && message.synthesis_format === 'structured' && message.synthesis_structured ? (
                 <StructuredView data={message.synthesis_structured} />
@@ -121,12 +123,32 @@ function StructuredView({ data }: { data: SynthesisStructured }) {
     );
 }
 
-function SynthesisSkeleton() {
+function SynthesizingIndicator() {
+    const [elapsed, setElapsed] = React.useState(0);
+
+    React.useEffect(() => {
+        const start = Date.now();
+        const tick = () => setElapsed(Math.floor((Date.now() - start) / 1000));
+        const id = setInterval(tick, 1000);
+        return () => clearInterval(id);
+    }, []);
+
     return (
-        <div className="space-y-2">
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-4/5" />
-            <Skeleton className="h-4 w-3/5" />
+        <div className="space-y-3">
+            <div className="flex items-center gap-2">
+                <Spinner className="size-3.5 text-primary" />
+                <span className="text-xs font-medium text-muted-foreground">
+                    Synthesizing responses...
+                </span>
+                <span className="text-xs tabular-nums text-muted-foreground/60">
+                    {elapsed}s
+                </span>
+            </div>
+            <div className="space-y-2">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-4/5" />
+                <Skeleton className="h-4 w-3/5" />
+            </div>
         </div>
     );
 }

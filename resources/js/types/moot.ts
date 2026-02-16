@@ -1,4 +1,4 @@
-export type ConsultationMode = 'quick' | 'code';
+export type ConsultationMode = 'quick';
 
 export type MessageStatus = 'pending' | 'running' | 'synthesizing' | 'completed' | 'failed';
 
@@ -11,7 +11,6 @@ export interface Thread {
     mode: ConsultationMode;
     providers: string[];
     provider_config: Record<string, ProviderConfig> | null;
-    context_paths: string[] | null;
     created_at: string;
     updated_at: string;
     messages?: Message[];

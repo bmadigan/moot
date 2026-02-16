@@ -1,6 +1,10 @@
-# Moot
+<p align="center">
+  <img src="public/logo.png" alt="Moot" height="80">
+</p>
 
-An open-source Laravel application that fans out prompts to multiple AI providers, shows responses side-by-side, and synthesizes a unified recommendation.
+<p align="center">
+  An open-source Laravel application that fans out prompts to multiple AI providers, shows responses side-by-side, and synthesizes a unified recommendation.
+</p>
 
 ## Features
 
@@ -9,7 +13,6 @@ An open-source Laravel application that fans out prompts to multiple AI provider
 - **AI Synthesis** — Unified analysis identifying consensus, differences, and actionable recommendations
 - **Multi-Turn Conversations** — Follow-up messages with full conversation context per provider
 - **Real-Time Updates** — WebSocket broadcasting via Laravel Reverb for live response streaming
-- **Two Modes** — Quick mode (API advisors) and Code mode (CLI agents)
 - **Provider Configuration** — Per-provider model selection, temperature, and token limits
 - **Cost Tracking** — Per-response and aggregate cost estimates
 - **Export** — Download threads as formatted Markdown files
@@ -109,7 +112,6 @@ docker compose up -d
 app/
   Ai/
     Agents/          # AI advisor agents (Claude, GPT, Gemini, Synthesizer)
-    Tools/           # External tool integrations (Counselors CLI)
   Console/Commands/  # Artisan commands (moot:install, moot:ask)
   Enums/             # ConsultationMode, MessageStatus, SynthesisFormat
   Events/            # AdvisorResponded, MootCompleted (broadcast)
