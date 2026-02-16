@@ -174,7 +174,7 @@ Thread (1) ──► (N) Message (1) ──► (N) AdvisorResponse
 | `id` | ulid | Primary key |
 | `user_id` | foreignId | Owner |
 | `title` | string, nullable | Auto-generated from first prompt |
-| `mode` | enum(quick, code) | Dispatch method |
+| `mode` | enum(quick) | Consultation mode |
 | `providers` | json | Array of provider keys |
 | `provider_config` | json, nullable | Per-provider overrides (model, temperature) |
 | `context_paths` | json, nullable | Reserved for future use |
@@ -219,69 +219,80 @@ Thread (1) ──► (N) Message (1) ──► (N) AdvisorResponse
 ```
 moot/
 ├── app/
+│   ├── Actions/Moot/
+│   │   ├── CheckProviderStatus.php
+│   │   ├── CreateMessage.php
+│   │   ├── CreateThread.php
+│   │   ├── DeleteThread.php
+│   │   └── ExportThreadAsMarkdown.php
 │   ├── Ai/
-│   │   ├── Agents/
-│   │   │   ├── ClaudeAdvisor.php
-│   │   │   ├── GptAdvisor.php
-│   │   │   ├── GeminiAdvisor.php
-│   │   │   └── Synthesizer.php
-│   │   └── Middleware/
-│   │       └── InjectProjectContext.php
-│   ├── Models/
-│   │   ├── Thread.php
-│   │   ├── Message.php
-│   │   └── AdvisorResponse.php
-│   ├── Http/Controllers/Api/
-│   │   ├── ThreadController.php
-│   │   └── MessageController.php
-│   ├── Jobs/
-│   │   └── DispatchAdvisors.php
-│   ├── Events/
-│   │   ├── AdvisorResponded.php
-│   │   └── MootCompleted.php
+│   │   └── Agents/
+│   │       ├── AdvisorRegistry.php
+│   │       ├── ClaudeAdvisor.php
+│   │       ├── GeminiAdvisor.php
+│   │       ├── GptAdvisor.php
+│   │       ├── StructuredSynthesizer.php
+│   │       └── Synthesizer.php
+│   ├── Console/Commands/
+│   │   ├── MootAsk.php
+│   │   └── MootInstall.php
 │   ├── Enums/
 │   │   ├── ConsultationMode.php
 │   │   ├── MessageStatus.php
 │   │   └── SynthesisFormat.php
-│   ├── Console/Commands/
-│   │   ├── MootInstall.php
-│   │   └── MootAsk.php
-│   └── Mcp/                            # v1.0
-│       ├── Servers/
-│       │   └── MootServer.php
-│       └── Tools/
-│           └── ConsultMootTool.php
+│   ├── Events/
+│   │   ├── AdvisorResponded.php
+│   │   └── MootCompleted.php
+│   ├── Http/Controllers/Moot/          # Single Action Controllers
+│   │   ├── DestroyController.php
+│   │   ├── ExportController.php
+│   │   ├── IndexController.php
+│   │   ├── MessageController.php
+│   │   ├── ShowController.php
+│   │   └── StoreController.php
+│   ├── Jobs/
+│   │   └── DispatchAdvisors.php
+│   ├── Models/
+│   │   ├── AdvisorResponse.php
+│   │   ├── Message.php
+│   │   ├── Thread.php
+│   │   └── User.php
+│   └── Policies/
+│       └── ThreadPolicy.php
 │
 ├── config/
 │   └── moot.php
 │
-├── database/migrations/
-│   ├── 0001_create_threads_table.php
-│   ├── 0002_create_messages_table.php
-│   └── 0003_create_advisor_responses_table.php
-│
 ├── resources/js/
-│   ├── components/
-│   │   ├── ChatInput.jsx
-│   │   ├── AdvisorCard.jsx
-│   │   ├── SynthesisPanel.jsx
-│   │   ├── ProviderSelector.jsx
-│   │   ├── ProviderConfigModal.jsx
-│   │   ├── ThreadSidebar.jsx
-│   │   └── ConversationThread.jsx
+│   ├── components/moot/               # Moot UI components (TypeScript)
+│   │   ├── advisor-card.tsx
+│   │   ├── chat-input.tsx
+│   │   ├── conversation-thread.tsx
+│   │   ├── error-banner.tsx
+│   │   ├── export-button.tsx
+│   │   ├── message-footer.tsx
+│   │   ├── provider-badge.tsx
+│   │   ├── provider-config-popover.tsx
+│   │   ├── provider-selector.tsx
+│   │   ├── provider-status.tsx
+│   │   ├── shortcuts-help.tsx
+│   │   ├── synthesis-panel.tsx
+│   │   └── thread-sidebar.tsx
 │   ├── hooks/
-│   │   └── useMoot.js
+│   │   ├── use-keyboard-shortcuts.ts
+│   │   └── use-moot.ts
 │   ├── layouts/
-│   │   └── AppLayout.jsx
-│   └── pages/
-│       └── Moot.jsx
-│
-├── resources/css/
-│   └── app.css
+│   │   └── moot-layout.tsx
+│   ├── pages/moot/
+│   │   ├── index.tsx                   # New thread page
+│   │   └── show.tsx                    # Conversation view
+│   ├── lib/
+│   │   └── providers.ts
+│   └── types/
+│       └── moot.ts
 │
 ├── routes/
-│   ├── api.php
-│   └── ai.php                          # MCP server routes (v1.0)
+│   └── moot.php
 │
 ├── docker-compose.yml
 ├── .env.example
@@ -290,26 +301,22 @@ moot/
 
 ---
 
-## 9. API Endpoints
+## 9. Routes (Inertia)
 
-### Threads
+All routes use Inertia.js (no separate API layer). Single Action Controllers handle each route.
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/api/threads` | List user's threads (paginated) |
-| `POST` | `/api/threads` | Create new thread |
-| `GET` | `/api/threads/{id}` | Get thread with messages and responses |
-| `PATCH` | `/api/threads/{id}` | Update thread settings (providers, config) |
-| `DELETE` | `/api/threads/{id}` | Delete thread |
+| Method | Endpoint | Controller | Description |
+|--------|----------|------------|-------------|
+| `GET` | `/moot` | `IndexController` | New thread page |
+| `POST` | `/moot` | `StoreController` | Create thread + dispatch advisors |
+| `GET` | `/moot/{thread}` | `ShowController` | Conversation view |
+| `DELETE` | `/moot/{thread}` | `DestroyController` | Delete thread |
+| `POST` | `/moot/{thread}/messages` | `MessageController` | Send follow-up message |
+| `GET` | `/moot/{thread}/export` | `ExportController` | Download thread as Markdown |
 
-### Messages
+All routes require `auth` + `verified` middleware.
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/api/threads/{id}/messages` | Send message + dispatch advisors |
-| `GET` | `/api/threads/{id}/messages` | Get all messages in thread |
-
-### POST /api/threads (Create)
+### POST /moot (Create Thread)
 
 ```json
 {
@@ -325,7 +332,7 @@ moot/
 }
 ```
 
-### POST /api/threads/{id}/messages (Follow-Up)
+### POST /moot/{thread}/messages (Follow-Up)
 
 ```json
 {
@@ -730,39 +737,40 @@ This gives Moot the "three interfaces" pattern Laravel advocates: **web UI**, **
 
 ## 15. Milestones
 
-### v0.1 — Foundation (Current)
+### v0.1 — Foundation ✅
 
 - [x] Project scaffold (agents, models, migrations, controllers, React components)
 - [x] AI SDK agent classes (Claude, GPT, Gemini, Synthesizer)
 - [x] DispatchAdvisors job with Concurrency fan-out
 - [x] Reverb broadcasting events
-- [x] React UI with mock data
+- [x] React UI with Inertia.js
 - [x] Earth-tone light theme with JetBrains Mono
 - [x] PRD with all decisions documented
-- [ ] Rename "Council" → "Moot" across entire codebase
-- [ ] Refactor data model from single consultations to threaded conversations
-- [ ] Wire React UI to real API endpoints
-- [ ] Replace polling with streaming (Reverb + `useStream`)
-- [ ] End-to-end test with at least 2 providers
+- [x] Rename "Council" → "Moot" across entire codebase
+- [x] Refactor data model from single consultations to threaded conversations
+- [x] Wire React UI to Inertia controllers
+- [x] Real-time updates via Reverb + Echo
+- [x] End-to-end test with all 3 providers
 
-### v0.2 — Multi-Turn + Config
+### v0.2 — Multi-Turn + Config ✅
 
-- [ ] Persistent multi-turn conversations with `RemembersConversations`
-- [ ] Thread sidebar with conversation history
-- [ ] Collapsed/expanded advisor cards in conversation view
-- [ ] Synthesis format toggle (markdown ↔ structured)
-- [ ] Per-provider configuration popover (model, temperature, max tokens)
-- [ ] Cost tracking and display
-- [ ] `php artisan moot:install` with Laravel Prompts
-- [ ] `php artisan moot:ask` CLI command
+- [x] Persistent multi-turn conversations with `RemembersConversations`
+- [x] Thread sidebar with conversation history
+- [x] Collapsed/expanded advisor cards + columns/list layout toggle
+- [x] Synthesis format toggle (markdown ↔ structured)
+- [x] Per-provider configuration popover (model, temperature, max tokens)
+- [x] Cost tracking and display
+- [x] `php artisan moot:install` with Laravel Prompts
+- [x] `php artisan moot:ask` CLI command
 
-### v0.3 — Polish + Distribution
+### v0.3 — Polish + Distribution (In Progress)
 
-- [ ] Docker Compose with all services
-- [ ] Export thread as Markdown
-- [ ] Error handling UI (timeout, rate limit, invalid key)
-- [ ] Keyboard shortcuts (⌘+Enter to send, ⌘+N new thread, etc.)
+- [x] Docker Compose with all services
+- [x] Export thread as Markdown
+- [x] Error handling UI (timeout, rate limit, invalid key)
+- [x] Keyboard shortcuts (⌘+Enter to send, ⌘+N new thread, etc.)
 - [ ] README with screenshots and animated GIF demo
+- [x] Marketing landing page
 
 ### v0.4 — Ecosystem
 
@@ -819,6 +827,7 @@ This gives Moot the "three interfaces" pattern Laravel advocates: **web UI**, **
 | 6 | Name? | **Moot** | No namespace conflicts in AI or Laravel ecosystems. Anglo-Saxon "assembly of advisors" + "debatable" double meaning. 4 letters, CLI-friendly: `php artisan moot:ask`. |
 | 7 | CLI framework? | **Laravel Prompts** | First-party, bundled with Laravel 12. Beautiful interactive forms for `moot:install` setup wizard. |
 | 8 | Theme? | **Earth-tone light, JetBrains Mono** | Claude Code-inspired aesthetic. Warm, professional, distinctive. No dark mode toggle. |
+| 9 | Code mode (Counselors CLI)? | **Removed** | Counselors CLI integration was unreliable (timeouts, process failures). The value proposition of local CLI subprocesses didn't justify the complexity. Removed entirely — single "Quick" mode via API calls only. |
 
 ---
 

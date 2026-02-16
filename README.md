@@ -6,6 +6,10 @@
   An open-source Laravel application that fans out prompts to multiple AI providers, shows responses side-by-side, and synthesizes a unified recommendation.
 </p>
 
+<p align="center">
+  <img src="public/screenshots/conversation.png" alt="Moot — side-by-side AI advisor responses with synthesis" width="800">
+</p>
+
 ## Features
 
 - **Multi-Provider Consultation** — Send prompts to Claude, GPT, and Gemini simultaneously
@@ -17,6 +21,10 @@
 - **Cost Tracking** — Per-response and aggregate cost estimates
 - **Export** — Download threads as formatted Markdown files
 - **CLI Interface** — `moot:ask` artisan command for terminal-based consultations
+
+<p align="center">
+  <img src="public/screenshots/new-thread.png" alt="Start a new Moot" width="800">
+</p>
 
 ## Tech Stack
 
@@ -110,12 +118,12 @@ docker compose up -d
 
 ```
 app/
-  Ai/
-    Agents/          # AI advisor agents (Claude, GPT, Gemini, Synthesizer)
-  Console/Commands/  # Artisan commands (moot:install, moot:ask)
+  Actions/Moot/      # CreateThread, CreateMessage, ExportThreadAsMarkdown, etc.
+  Ai/Agents/         # ClaudeAdvisor, GptAdvisor, GeminiAdvisor, Synthesizer
+  Console/Commands/  # moot:install, moot:ask
   Enums/             # ConsultationMode, MessageStatus, SynthesisFormat
-  Events/            # AdvisorResponded, MootCompleted (broadcast)
-  Http/Controllers/  # Inertia + API controllers
+  Events/            # AdvisorResponded, MootCompleted (broadcast via Reverb)
+  Http/Controllers/  # Single Action Controllers (Index, Store, Show, etc.)
   Jobs/              # DispatchAdvisors (concurrent fan-out + synthesis)
   Models/            # Thread, Message, AdvisorResponse
   Policies/          # ThreadPolicy (ownership authorization)
