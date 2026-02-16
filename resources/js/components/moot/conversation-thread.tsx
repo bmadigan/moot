@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
-import { AdvisorCard, AdvisorCardSkeleton } from '@/components/moot/advisor-card';
+import { ChevronDown, ChevronUp, Columns2, LayoutList } from 'lucide-react';
+import { AdvisorCard, AdvisorCardOpen, AdvisorCardSkeleton } from '@/components/moot/advisor-card';
 import { ErrorBanner } from '@/components/moot/error-banner';
 import { MessageFooter } from '@/components/moot/message-footer';
 import { SynthesisPanel } from '@/components/moot/synthesis-panel';
@@ -47,10 +47,16 @@ function MessageGroup({
     message: Message;
     threadId?: string;
 }) {
+    const [layout, setLayout] = React.useState<'columns' | 'list'>('columns');
     const [allExpanded, setAllExpanded] = React.useState(false);
     const responses = message.advisor_responses ?? [];
     const isLoading =
         message.status === 'pending' || message.status === 'running';
+
+    const gridCols =
+        responses.length === 2
+            ? 'md:grid-cols-2'
+            : 'md:grid-cols-2 lg:grid-cols-3';
 
     return (
         <div className="space-y-3">
@@ -81,33 +87,66 @@ function MessageGroup({
                             Advisor Responses ({responses.length})
                         </span>
                         {responses.length > 1 && (
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-6 text-xs"
-                                onClick={() => setAllExpanded((v) => !v)}
-                            >
-                                {allExpanded ? (
-                                    <>
-                                        <ChevronUp className="mr-1 size-3" />
-                                        Collapse All
-                                    </>
-                                ) : (
-                                    <>
-                                        <ChevronDown className="mr-1 size-3" />
-                                        Expand All
-                                    </>
+                            <div className="flex items-center gap-1">
+                                {layout === 'list' && (
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="mr-1 h-6 text-xs"
+                                        onClick={() => setAllExpanded((v) => !v)}
+                                    >
+                                        {allExpanded ? (
+                                            <>
+                                                <ChevronUp className="mr-1 size-3" />
+                                                Collapse All
+                                            </>
+                                        ) : (
+                                            <>
+                                                <ChevronDown className="mr-1 size-3" />
+                                                Expand All
+                                            </>
+                                        )}
+                                    </Button>
                                 )}
-                            </Button>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className={cn('size-6', layout === 'columns' && 'bg-accent')}
+                                    onClick={() => setLayout('columns')}
+                                >
+                                    <Columns2 className="size-3.5" />
+                                </Button>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className={cn('size-6', layout === 'list' && 'bg-accent')}
+                                    onClick={() => setLayout('list')}
+                                >
+                                    <LayoutList className="size-3.5" />
+                                </Button>
+                            </div>
                         )}
                     </div>
-                    {responses.map((response) => (
-                        <AdvisorCard
-                            key={response.id}
-                            response={response}
-                            defaultOpen={allExpanded}
-                        />
-                    ))}
+                    {layout === 'columns' && responses.length > 1 ? (
+                        <div className={cn('grid grid-cols-1 gap-3', gridCols)}>
+                            {responses.map((response) => (
+                                <AdvisorCardOpen
+                                    key={response.id}
+                                    response={response}
+                                />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="space-y-2">
+                            {responses.map((response) => (
+                                <AdvisorCard
+                                    key={response.id}
+                                    response={response}
+                                    defaultOpen={allExpanded}
+                                />
+                            ))}
+                        </div>
+                    )}
                 </div>
             )}
 

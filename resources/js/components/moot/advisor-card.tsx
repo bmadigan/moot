@@ -90,6 +90,63 @@ export function AdvisorCard({
     );
 }
 
+export function AdvisorCardOpen({
+    response,
+    className,
+}: Omit<AdvisorCardProps, 'defaultOpen'>) {
+    const durationSec = response.duration_ms
+        ? (response.duration_ms / 1000).toFixed(1)
+        : null;
+
+    const costDisplay = response.estimated_cost
+        ? `$${response.estimated_cost.toFixed(4)}`
+        : null;
+
+    return (
+        <div className={cn('flex flex-col rounded-lg border bg-card', className)}>
+            <div className="flex items-center gap-3 px-4 py-3">
+                <ProviderBadge provider={response.provider} size="sm" />
+                {response.model && (
+                    <span className="text-xs text-muted-foreground">
+                        {response.model}
+                    </span>
+                )}
+                <span className="flex-1" />
+                {response.error && (
+                    <span className="text-xs text-destructive">Error</span>
+                )}
+                {durationSec && (
+                    <span className="text-xs text-muted-foreground">
+                        {durationSec}s
+                    </span>
+                )}
+                {costDisplay && (
+                    <span className="text-xs text-muted-foreground">
+                        {costDisplay}
+                    </span>
+                )}
+            </div>
+            <div className="max-h-[400px] overflow-y-auto border-t px-4 py-3">
+                {response.error ? (
+                    <p className="text-sm text-destructive">
+                        {response.error}
+                    </p>
+                ) : response.content ? (
+                    <div className="prose prose-sm max-w-none text-foreground">
+                        <Markdown remarkPlugins={[remarkGfm]}>
+                            {response.content}
+                        </Markdown>
+                    </div>
+                ) : (
+                    <p className="text-sm text-muted-foreground italic">
+                        No response content.
+                    </p>
+                )}
+            </div>
+        </div>
+    );
+}
+
 export function AdvisorCardSkeleton() {
     return (
         <div className="rounded-lg border bg-card px-4 py-3">
