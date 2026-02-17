@@ -1,7 +1,7 @@
 import { Head, Link, usePage } from '@inertiajs/react';
-import { login, register } from '@/routes';
+import { login } from '@/routes';
 
-export default function Welcome({ canRegister = true }: { canRegister?: boolean }) {
+export default function Welcome() {
     const { auth } = usePage().props;
 
     return (
@@ -31,22 +31,12 @@ export default function Welcome({ canRegister = true }: { canRegister?: boolean 
                                     Go to App
                                 </Link>
                             ) : (
-                                <>
-                                    <Link
-                                        href={login()}
-                                        className="inline-flex h-9 items-center rounded-md px-4 text-sm font-medium text-foreground hover:bg-accent"
-                                    >
-                                        Log in
-                                    </Link>
-                                    {canRegister && (
-                                        <Link
-                                            href={register()}
-                                            className="inline-flex h-9 items-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground shadow-xs hover:bg-primary/90"
-                                        >
-                                            Get Started
-                                        </Link>
-                                    )}
-                                </>
+                                <Link
+                                    href={login()}
+                                    className="inline-flex h-9 items-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground shadow-xs hover:bg-primary/90"
+                                >
+                                    Log in
+                                </Link>
                             )}
                         </div>
                     </div>
@@ -91,13 +81,13 @@ export default function Welcome({ canRegister = true }: { canRegister?: boolean 
                                 ) : (
                                     <>
                                         <Link
-                                            href={canRegister ? register() : login()}
+                                            href={login()}
                                             className="inline-flex h-12 items-center rounded-md bg-primary px-8 text-base font-semibold text-primary-foreground shadow-xs hover:bg-primary/90"
                                         >
                                             Get Started Free
                                         </Link>
                                         <a
-                                            href="https://github.com/bradcush/moot"
+                                            href="https://github.com/bmadigan/moot"
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="inline-flex h-12 items-center gap-2 rounded-md border border-border bg-card px-8 text-base font-semibold text-foreground shadow-xs hover:bg-accent"
@@ -474,13 +464,13 @@ export default function Welcome({ canRegister = true }: { canRegister?: boolean 
                             ) : (
                                 <>
                                     <Link
-                                        href={canRegister ? register() : login()}
+                                        href={login()}
                                         className="inline-flex h-12 items-center rounded-md bg-primary px-8 text-base font-semibold text-primary-foreground shadow-xs hover:bg-primary/90"
                                     >
                                         Get Started Free
                                     </Link>
                                     <a
-                                        href="https://github.com/bradcush/moot"
+                                        href="https://github.com/bmadigan/moot"
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="inline-flex h-12 items-center gap-2 rounded-md border border-border bg-background px-8 text-base font-semibold text-foreground shadow-xs hover:bg-accent"
