@@ -1,7 +1,7 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import { login } from '@/routes';
 
-export default function Welcome() {
+export default function Welcome({ fathomSiteId }: { fathomSiteId?: string }) {
     const { auth } = usePage().props;
 
     return (
@@ -12,6 +12,9 @@ export default function Welcome() {
                     href="https://fonts.bunny.net/css?family=bangers:400"
                     rel="stylesheet"
                 />
+                {fathomSiteId && (
+                    <script src="https://cdn.usefathom.com/script.js" data-site={fathomSiteId} defer />
+                )}
             </Head>
 
             <div className="min-h-screen bg-background text-foreground">
