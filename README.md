@@ -28,7 +28,7 @@
 
 ## Tech Stack
 
-- **Backend:** Laravel 12, PHP 8.3, Laravel AI SDK (`laravel/ai`)
+- **Backend:** Laravel 12, PHP 8.4, Laravel AI SDK (`laravel/ai`)
 - **Frontend:** React 19, TypeScript, Inertia.js, Tailwind CSS 4
 - **Real-Time:** Laravel Reverb, Laravel Echo
 - **Auth:** Laravel Fortify (login, register, 2FA, password reset)
@@ -37,7 +37,7 @@
 
 ## Requirements
 
-- PHP 8.3+
+- PHP 8.4+
 - Node.js 20+
 - Composer
 - At least one AI provider API key (Anthropic, OpenAI, or Google)
