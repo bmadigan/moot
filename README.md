@@ -46,7 +46,7 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/moot.git
+git clone https://github.com/bmadigan/moot.git
 cd moot
 
 # Install dependencies

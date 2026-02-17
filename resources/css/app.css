@@ -75,7 +75,7 @@
     --secondary: oklch(0.52 0.08 140);        /* #5A7A50 muted olive */
     --secondary-foreground: oklch(0.98 0.005 75);
     --muted: oklch(0.90 0.012 70);            /* slightly darker cream */
-    --muted-foreground: oklch(0.50 0.04 60);  /* #8A7252 warm clay */
+    --muted-foreground: oklch(0.40 0.04 60);  /* darker warm clay */
     --accent: oklch(0.90 0.012 70);
     --accent-foreground: oklch(0.22 0.02 60);
     --destructive: oklch(0.577 0.245 27.325);
