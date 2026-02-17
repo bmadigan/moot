@@ -102,79 +102,14 @@ export default function Welcome() {
                             </div>
                         </div>
 
-                        {/* Screenshot Placeholder */}
+                        {/* App Screenshot */}
                         <div className="mx-auto mt-16 max-w-5xl">
-                            <div className="overflow-hidden rounded-xl border border-border bg-card shadow-lg">
-                                <div className="flex items-center gap-2 border-b border-border bg-card px-4 py-3">
-                                    <span className="size-3 rounded-full bg-[#C15F3C]/40" />
-                                    <span className="size-3 rounded-full bg-[#8A7252]/30" />
-                                    <span className="size-3 rounded-full bg-[#5A7A50]/30" />
-                                    <span className="ml-4 text-xs text-muted-foreground">moot.test</span>
-                                </div>
-                                <div className="relative aspect-video bg-gradient-to-br from-card to-background p-8">
-                                    <div className="flex h-full flex-col items-center justify-center gap-6">
-                                        {/* Mock UI */}
-                                        <div className="w-full max-w-3xl space-y-4">
-                                            {/* Mock prompt bar */}
-                                            <div className="rounded-lg border border-border bg-background p-4 text-sm text-muted-foreground">
-                                                "What&apos;s the best auth approach for my Laravel + React SPA?"
-                                            </div>
-                                            {/* Mock advisor cards */}
-                                            <div className="grid grid-cols-3 gap-3">
-                                                <div className="rounded-lg border border-border bg-background p-4">
-                                                    <div className="mb-2 flex items-center gap-2">
-                                                        <span className="inline-block size-2 rounded-full bg-[#D97706]" />
-                                                        <span className="text-xs font-semibold">Claude</span>
-                                                        <span className="ml-auto text-[10px] text-muted-foreground">1.2s</span>
-                                                    </div>
-                                                    <div className="space-y-1.5">
-                                                        <div className="h-2 w-full rounded bg-border" />
-                                                        <div className="h-2 w-4/5 rounded bg-border" />
-                                                        <div className="h-2 w-3/5 rounded bg-border" />
-                                                    </div>
-                                                </div>
-                                                <div className="rounded-lg border border-border bg-background p-4">
-                                                    <div className="mb-2 flex items-center gap-2">
-                                                        <span className="inline-block size-2 rounded-full bg-[#10B981]" />
-                                                        <span className="text-xs font-semibold">GPT</span>
-                                                        <span className="ml-auto text-[10px] text-muted-foreground">0.9s</span>
-                                                    </div>
-                                                    <div className="space-y-1.5">
-                                                        <div className="h-2 w-full rounded bg-border" />
-                                                        <div className="h-2 w-3/4 rounded bg-border" />
-                                                        <div className="h-2 w-4/5 rounded bg-border" />
-                                                    </div>
-                                                </div>
-                                                <div className="rounded-lg border border-border bg-background p-4">
-                                                    <div className="mb-2 flex items-center gap-2">
-                                                        <span className="inline-block size-2 rounded-full bg-[#3B82F6]" />
-                                                        <span className="text-xs font-semibold">Gemini</span>
-                                                        <span className="ml-auto text-[10px] text-muted-foreground">1.5s</span>
-                                                    </div>
-                                                    <div className="space-y-1.5">
-                                                        <div className="h-2 w-full rounded bg-border" />
-                                                        <div className="h-2 w-2/3 rounded bg-border" />
-                                                        <div className="h-2 w-4/5 rounded bg-border" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            {/* Mock synthesis */}
-                                            <div className="rounded-lg border-2 border-primary/30 bg-primary/5 p-4">
-                                                <div className="mb-2 flex items-center gap-2 text-xs font-semibold text-primary">
-                                                    <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                                                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-                                                    </svg>
-                                                    SYNTHESIS
-                                                </div>
-                                                <div className="space-y-1.5">
-                                                    <div className="h-2 w-full rounded bg-primary/20" />
-                                                    <div className="h-2 w-5/6 rounded bg-primary/20" />
-                                                    <div className="h-2 w-3/4 rounded bg-primary/20" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div className="overflow-hidden rounded-xl border border-border shadow-lg">
+                                <img
+                                    src="/screenshots/conversation.png"
+                                    alt="Moot — side-by-side AI advisor responses with synthesis"
+                                    className="w-full"
+                                />
                             </div>
                             <p className="mt-3 text-center text-xs text-muted-foreground">
                                 Fan out to multiple AI providers, get a synthesized recommendation
